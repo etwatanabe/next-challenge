@@ -20,12 +20,14 @@ export class PrismaSellerRepository implements ISellerRepository {
     return foundSeller;
   }
 
-  async findAll(): Promise<Seller[]> {
-    const foundSellers = await prisma.seller.findMany();
+  async findByEmail(email: string): Promise<Seller | null> {
+    const foundSeller = await prisma.seller.findUnique({
+      where: { email: email },
+    });
 
-    if (!foundSellers) return [];
+    if (!foundSeller) return null;
 
-    return foundSellers;
+    return foundSeller;
   }
 
   async update(id: string, data: SellerProps): Promise<Seller> {
