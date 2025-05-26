@@ -4,7 +4,6 @@ export class DeleteSellerUseCase {
   constructor(private readonly sellerRepository: ISellerRepository) {}
 
   async execute(id: string): Promise<void> {
-    return await this.sellerRepository.delete(id);
-
+    await this.sellerRepository.delete(id);
   }
 }

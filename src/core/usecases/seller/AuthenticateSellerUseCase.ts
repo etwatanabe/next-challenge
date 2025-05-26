@@ -15,7 +15,7 @@ export class AuthenticateSellerUseCase {
     if (!passWordMatch) {
       throw new Error("Invalid password");
     }
-    
+
     const token = jwt.sign(
       { id: seller.id, email: seller.email },
       process.env.JWT_SECRET || "default_secret",
@@ -27,8 +27,8 @@ export class AuthenticateSellerUseCase {
       seller: {
         id: seller.id,
         name: seller.name,
-        email: seller.email
-      }
+        email: seller.email,
+      },
     };
   }
 }

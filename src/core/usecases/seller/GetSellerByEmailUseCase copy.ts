@@ -5,6 +5,11 @@ export class GetSellerByEmailUseCase {
   constructor(private readonly sellerRepository: ISellerRepository) {}
 
   async execute(email: string): Promise<Seller | null> {
-    return await this.sellerRepository.findByEmail(email);
+    const foundSeller = await this.sellerRepository.findByEmail(email);
+    if (!foundSeller) {
+      throw new Error("Could not find seller with the provided email");
+    }
+
+    return foundSeller;
   }
 }
