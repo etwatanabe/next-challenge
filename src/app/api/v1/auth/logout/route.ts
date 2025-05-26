@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
+// POST: Log out a seller
 export async function POST() {
   try {
     const cookieStore = await cookies();

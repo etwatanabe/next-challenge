@@ -1,31 +1,41 @@
 import { CreateSellerUseCase } from "@/core/usecases/seller/CreateSellerUseCase";
 import { PrismaSellerRepository } from "@/infra/prisma/PrismaSellerRepository";
-import bcrypt from "bcrypt";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 const repository = new PrismaSellerRepository();
 
-// POST: Create a new seller (Register)
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     const { name, email, password } = await request.json();
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
+    
+    if (!name || !email || !password) {
+      return NextResponse.json(
+        { error: "Missing required fields" },
+        { status: 400 }
+      );
+    }
+    
     const useCase = new CreateSellerUseCase(repository);
-
-    const response = await useCase.execute({
+    
+    const seller = await useCase.execute({
       name,
       email,
-      password: hashedPassword,
+      password,
+      products: [],
+      orders: [],
     });
 
-    return NextResponse.json(response);
+    return NextResponse.json({
+      id: seller.id,
+      name: seller.name,
+      email: seller.email
+    }, { status: 201 }); // 201 Created é mais apropriado para criação
+    
   } catch (error) {
     console.error("Error creating seller:", error);
-    return NextResponse.json({
-      error: "Failed to create seller",
-      status: 500,
-    });
+    return NextResponse.json(
+      { error: "Failed to create seller" },
+      { status: 500 }
+    );
   }
 }
