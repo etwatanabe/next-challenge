@@ -1,16 +1,26 @@
 import { IProductRepository } from "@/core/domain/repositories/IProductRepository";
-import { Product, ProductProps } from "@/core/domain/entities/Product";
-import prisma from "@/utils/prisma";
+import { Product } from "@/core/domain/entities/Product";
+import prisma from "@/infra/lib/prisma";
 
 export class PrismaProductRepository implements IProductRepository {
-  async create(data: ProductProps): Promise<Product> {
+  async create(data: Product): Promise<Product> {
     const createdProduct = await prisma.product.create({
-      data: { ...data },
+      data: {
+        name: data.name,
+        description: data.description,
+        price: data.price,
+        imageUrl: data.imageUrl,
+        sellerId: data.sellerId,
+      },
     });
-    return {
-      ...createdProduct,
-      price: Number(createdProduct.price),
-    };
+
+    return Product.reconstitute(createdProduct.id, {
+      name: createdProduct.name,
+      description: createdProduct.description,
+      price: createdProduct.price.toNumber(),
+      imageUrl: createdProduct.imageUrl,
+      sellerId: createdProduct.sellerId,
+    });
   }
 
   async findById(id: string): Promise<Product | null> {
@@ -18,33 +28,63 @@ export class PrismaProductRepository implements IProductRepository {
 
     if (!foundProduct) return null;
 
-    return {
-      ...foundProduct,
-      price: Number(foundProduct.price),
-    };
+    return Product.reconstitute(foundProduct.id, {
+      name: foundProduct.name,
+      description: foundProduct.description,
+      price: foundProduct.price.toNumber(),
+      imageUrl: foundProduct.imageUrl,
+      sellerId: foundProduct.sellerId,
+    });
+  }
+
+  async findByName(name: string): Promise<Product | null> {
+    const foundProduct = await prisma.product.findUnique({
+      where: { name: name },
+    });
+
+    if (!foundProduct) return null;
+
+    return Product.reconstitute(foundProduct.id, {
+      name: foundProduct.name,
+      description: foundProduct.description,
+      price: foundProduct.price.toNumber(),
+      imageUrl: foundProduct.imageUrl,
+      sellerId: foundProduct.sellerId,
+    });
   }
 
   async findAll(): Promise<Product[]> {
     const foundProduct = await prisma.product.findMany();
 
-    if (!foundProduct) return [];
-
-    return foundProduct.map((product) => ({
-      ...product,
-      price: Number(product.price),
-    }));
+    return foundProduct.map((product) =>
+      Product.reconstitute(product.id, {
+        name: product.name,
+        description: product.description,
+        price: product.price.toNumber(),
+        imageUrl: product.imageUrl,
+        sellerId: product.sellerId,
+      })
+    );
   }
 
-  async update(id: string, data: ProductProps): Promise<Product> {
+  async update(data: Product): Promise<Product> {
     const updatedProduct = await prisma.product.update({
-      where: { id: id },
-      data: { ...data },
+      where: { id: data.id },
+      data: { 
+        name: data.name,
+        description: data.description,
+        price: data.price,
+        imageUrl: data.imageUrl,
+       },
     });
 
-    return {
-      ...updatedProduct,
-      price: Number(updatedProduct.price),
-    };
+    return Product.reconstitute(updatedProduct.id, {
+      name: updatedProduct.name,
+      description: updatedProduct.description,
+      price: updatedProduct.price.toNumber(),
+      imageUrl: updatedProduct.imageUrl,
+      sellerId: updatedProduct.sellerId,
+    });
   }
 
   async delete(id: string): Promise<void> {

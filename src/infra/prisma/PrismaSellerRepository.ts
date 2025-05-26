@@ -4,7 +4,7 @@ import { OrderItem } from "@/core/domain/entities/OrderItem";
 import { Product } from "@/core/domain/entities/Product";
 import { Seller, SellerProps } from "@/core/domain/entities/Seller";
 import { ISellerRepository } from "@/core/domain/repositories/ISellerRepository";
-import prisma from "@/utils/prisma";
+import prisma from "@/infra/lib/prisma";
 
 type PrismaSeller = Prisma.SellerGetPayload<{
   include: {
@@ -30,12 +30,12 @@ export class PrismaSellerRepository implements ISellerRepository {
         orders: {
           include: {
             items: true,
-          }
-        }
-      }
+          },
+        },
+      },
     });
 
-    return this.toDomainSeller(createdSeller, [], []);
+    return this.toDomain(createdSeller, [], []);
   }
 
   async findById(id: Seller["id"]): Promise<Seller | null> {
@@ -57,7 +57,7 @@ export class PrismaSellerRepository implements ISellerRepository {
 
     const domainOrders = this.toDomainOrders(foundSeller.orders);
 
-    return this.toDomainSeller(foundSeller, domainProducts, domainOrders);
+    return this.toDomain(foundSeller, domainProducts, domainOrders);
   }
 
   async findByEmail(email: Seller["email"]): Promise<Seller | null> {
@@ -79,7 +79,7 @@ export class PrismaSellerRepository implements ISellerRepository {
 
     const domainOrders = this.toDomainOrders(foundSeller.orders);
 
-    return this.toDomainSeller(foundSeller, domainProducts, domainOrders);
+    return this.toDomain(foundSeller, domainProducts, domainOrders);
   }
 
   async update(id: Seller["id"], data: Partial<SellerProps>): Promise<Seller> {
@@ -104,14 +104,14 @@ export class PrismaSellerRepository implements ISellerRepository {
 
     const domainOrders = this.toDomainOrders(updatedSeller.orders);
 
-    return this.toDomainSeller(updatedSeller, domainProducts, domainOrders);
+    return this.toDomain(updatedSeller, domainProducts, domainOrders);
   }
 
   async delete(id: string): Promise<void> {
     await prisma.seller.delete({ where: { id } });
   }
 
-  private toDomainSeller(
+  private toDomain(
     seller: PrismaSeller,
     products: Product[],
     orders: Order[]
