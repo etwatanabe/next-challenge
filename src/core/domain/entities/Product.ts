@@ -30,4 +30,11 @@ export class Product {
   static reconstitute(id: string, props: ProductProps): Product {
     return new Product(id, props);
   }
+
+  update(props: Partial<Omit<ProductProps, "sellerId">>): void {
+    if (props.name) this.name = props.name;
+    if (props.description) this.description = props.description;
+    if (props.price) this.price = props.price;
+    if (props.imageUrl) this.imageUrl = props.imageUrl;
+  }
 }
