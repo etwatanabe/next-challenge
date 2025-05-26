@@ -56,6 +56,9 @@ CREATE TABLE "OrderItem" (
 -- CreateIndex
 CREATE UNIQUE INDEX "Seller_email_key" ON "Seller"("email");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "Product_name_key" ON "Product"("name");
+
 -- AddForeignKey
 ALTER TABLE "Product" ADD CONSTRAINT "Product_sellerId_fkey" FOREIGN KEY ("sellerId") REFERENCES "Seller"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
