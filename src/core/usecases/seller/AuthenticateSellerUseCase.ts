@@ -1,6 +1,6 @@
 import { PrismaSellerRepository } from "@/infra/prisma/PrismaSellerRepository";
-import { compare } from "bcrypt";
-import jwt from "jsonwebtoken";
+import { compare } from "bcryptjs";
+import { signToken } from "@/utils/jwt";
 
 export class AuthenticateSellerUseCase {
   constructor(private sellerRepository: PrismaSellerRepository) {}
@@ -16,11 +16,7 @@ export class AuthenticateSellerUseCase {
       throw new Error("Invalid password");
     }
 
-    const token = jwt.sign(
-      { id: seller.id, email: seller.email },
-      process.env.JWT_SECRET || "default_secret",
-      { expiresIn: "1d" }
-    );
+    const token = await signToken({ sub: seller.id });
 
     return {
       token,
