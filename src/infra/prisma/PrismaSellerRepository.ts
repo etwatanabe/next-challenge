@@ -130,7 +130,7 @@ export class PrismaSellerRepository implements ISellerRepository {
       Product.reconstitute(product.id, {
         name: product.name,
         description: product.description,
-        price: Number(product.price),
+        price: product.price.toNumber(),
         imageUrl: product.imageUrl,
         sellerId: product.sellerId,
       })
@@ -141,7 +141,7 @@ export class PrismaSellerRepository implements ISellerRepository {
     return orders.map((order) =>
       Order.reconstitute(order.id, {
         status: order.status,
-        amount: Number(order.amount),
+        amount: order.amount.toNumber(),
         customerName: order.customerName,
         customerEmail: order.customerEmail,
         customerPhone: order.customerPhone,
