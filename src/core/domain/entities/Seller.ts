@@ -50,6 +50,14 @@ export class Seller {
     this.products.push(product);
   }
 
+  public removeProduct(id: string): void {
+    const productIndex = this.products.findIndex((p) => p.id === id);
+    if (productIndex === -1) {
+      throw new Error(`Product with id ${id} not found`);
+    }
+    this.products.splice(productIndex, 1);
+  }
+
   private static isValidEmail(email: string): boolean {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
