@@ -1,31 +1,35 @@
-import { NextResponse, NextRequest} from "next/server";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { verifyToken } from "@/utils/jwt";
 
-export function middleware(request: NextRequest) {
-  const publicRoutes = [
-    '/api/v1/auth/login',
-    '/api/v1/auth/register',
-  ];
-  
-  const isPublicRoute = publicRoutes.some(route => 
-    request.nextUrl.pathname.startsWith(route)
-  );
-  
-  if (isPublicRoute) {
-    return NextResponse.next();
-  }
-  
+export async function middleware(request: NextRequest) {
   const token = request.cookies.get("auth_token")?.value;
-  
+
   if (!token) {
     return NextResponse.json(
       { error: "Unauthorized - Authentication required" },
       { status: 401 }
     );
   }
-  
-  return NextResponse.next();
+
+  try {
+    const decoded = await verifyToken(token);
+
+    const response = NextResponse.next();
+    if (decoded.sub) {
+      response.headers.set("X-User-Id", decoded.sub);
+    }
+
+    return response;
+  } catch (error) {
+    console.error("Invalid token:", error);
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
 }
 
 export const config = {
-  matcher: ['/api/v1/:path*']
+  matcher: [
+    "/api/v1/orders/:path*",
+    "/api/v1/products/:path*",
+  ],
 };
