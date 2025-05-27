@@ -5,8 +5,8 @@ import { OrderResponseDTO } from "@/core/dtos/order/OrderResponseDTO";
 
 export class ListOrdersUseCase {
   constructor(
-    private orderRepository: IOrderRepository,
-    private sellerRepository: ISellerRepository
+    private readonly orderRepository: IOrderRepository,
+    private readonly sellerRepository: ISellerRepository
   ) {}
 
   async execute(sellerId: string): Promise<OrderResponseDTO[]> {
