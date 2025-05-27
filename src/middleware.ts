@@ -22,7 +22,10 @@ export async function middleware(request: NextRequest) {
     return response;
   } catch (error) {
     console.error("Invalid token:", error);
-    return NextResponse.redirect(new URL("/login", request.url));
+    return NextResponse.json(
+      { error: "Unauthorized - Invalid token" },
+      { status: 401 }
+    );
   }
 }
 
