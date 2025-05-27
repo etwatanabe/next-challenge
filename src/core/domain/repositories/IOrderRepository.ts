@@ -1,9 +1,9 @@
-import { Order, OrderProps } from '@/core/domain/entities/Order';
+import { Order } from '@/core/domain/entities/Order';
 
 export interface IOrderRepository {
-  create(data: OrderProps): Promise<Order>;
-  findAll(): Promise<Order[]>;
+  create(order: Order): Promise<Order>;
   findById(id: string): Promise<Order | null>;
-  update(id:string, data: Partial<OrderProps>): Promise<Order>;
+  findAllBySellerId(sellerId: string): Promise<Order[]>;
   delete(id: string): Promise<void>;
+  update(order: Order): Promise<Order>;
 }
