@@ -20,10 +20,10 @@ model Seller {
 }
 
 model Product {
-  id          String         @id @default(uuid())
+  id          String      @id @default(uuid())
   name        String
   description String
-  price       Decimal        @db.Decimal(10, 2)
+  price       Decimal     @db.Decimal(10, 2)
   imageUrl    String
   sellerId    String
   orders      OrderItem[]
@@ -35,12 +35,12 @@ model Product {
 }
 
 model Order {
-  id            String         @id @default(uuid())
-  status        OrderStatus    @default(PENDING)
-  amount        Decimal        @db.Decimal(10, 2)
+  id     String      @id @default(uuid())
+  status OrderStatus @default(PENDING)
+  amount Decimal     @db.Decimal(10, 2)
 
-  items      OrderItem[]
-  sellerId      String
+  items    OrderItem[]
+  sellerId String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -49,9 +49,10 @@ model Order {
 }
 
 model OrderItem {
-  orderId   String
-  productId String
-  quantity  Int
+  orderId         String
+  productId       String
+  quantity        Int
+  priceAtPurchase Decimal @db.Decimal(10, 2)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
