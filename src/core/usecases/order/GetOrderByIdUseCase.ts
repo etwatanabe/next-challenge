@@ -1,0 +1,32 @@
+import { IOrderRepository } from "@/core/domain/repositories/IOrderRepository";
+import { IProductRepository } from "@/core/domain/repositories/IProductRepository";
+import { ISellerRepository } from "@/core/domain/repositories/ISellerRepository";
+import { OrderMapper } from "@/core/dtos/order/OrderMapper";
+
+export class GetOrderByIdUseCase {
+  constructor(
+    private readonly orderRepository: IOrderRepository,
+    private readonly productRepository: IProductRepository,
+    private readonly sellerRepository: ISellerRepository
+  ) {}
+
+  async execute(orderId: string, sellerId: string) {
+    const seller = await this.sellerRepository.findById(sellerId);
+    if (!seller) {
+      throw new Error(`Seller with ID ${sellerId} not found.`);
+    }
+
+    const order = await this.orderRepository.findById(orderId);
+    if (!order) {
+      throw new Error(`Order with ID ${orderId} not found.`);
+    }
+
+    if (order.sellerId !== sellerId) {
+      throw new Error(`Order with ID ${orderId} does not belong to seller ${sellerId}.`);
+    }
+
+    return OrderMapper.toResponseDTO(order);
+  }
+
+
+}
