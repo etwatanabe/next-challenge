@@ -1,18 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ListProductUseCase } from "@/core/usecases/product/ListProductUseCase";
-import { CreateProductUseCase } from "@/core/usecases/product/CreateProductUseCase";
-import { PrismaProductRepository } from "@/infra/prisma/PrismaProductRepository";
-
-const repository = new PrismaProductRepository();
+import {
+  createProductUseCase,
+  listProductUseCase,
+} from "@/factories/productUseCaseFactory";
+import { CreateProductDTO } from "@/core/dtos/product/CreateProductDTO";
 
 // GET: Fetch all products
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const useCase = new ListProductUseCase(repository);
+    const sellerId = request.headers.get("X-User-Id");
 
-    const products = await useCase.execute();
+    const useCase = listProductUseCase;
 
-    return NextResponse.json(products);
+    const products = await useCase.execute(sellerId!);
+
+    return NextResponse.json(products, { status: 200 });
   } catch (error) {
     console.error("Error fetching products:", error);
     return NextResponse.json(
@@ -25,8 +27,19 @@ export async function GET() {
 // POST: Create a new product
 export async function POST(request: NextRequest) {
   try {
-    const data = await request.json();
-    const useCase = new CreateProductUseCase(repository);
+    const body = await request.json();
+
+    const sellerId = request.headers.get("X-User-Id");
+
+    const data: CreateProductDTO = {
+      name: body.name,
+      description: body.description,
+      price: body.price,
+      imageUrl: body.imageUrl,
+      sellerId: sellerId!,
+    };
+
+    const useCase = createProductUseCase;
 
     const product = await useCase.execute(data);
     return NextResponse.json(product, { status: 201 });
@@ -37,4 +50,4 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
-};
+}

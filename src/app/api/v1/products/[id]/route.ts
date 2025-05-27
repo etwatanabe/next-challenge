@@ -1,25 +1,34 @@
-import { GetProductUseCase } from "@/core/usecases/product/GetProductUseCase";
-import { UpdateProductUseCase } from "@/core/usecases/product/UpdateProductUseCase";
-import { DeleteProductUseCase } from "@/core/usecases/product/DeleteProductUseCase";
-import { PrismaProductRepository } from "@/infra/prisma/PrismaProductRepository";
+import { DeleteProductDTO } from "@/core/dtos/product/DeleteProductDTO";
+import { GetProductDTO } from "@/core/dtos/product/GetProductDTO";
+import { UpdateProductDTO } from "@/core/dtos/product/UpdateProductDTO";
+import {
+  deleteProductUseCase,
+  getProductByIdUseCase,
+  updateProductUseCase,
+} from "@/factories/productUseCaseFactory";
 import { NextRequest, NextResponse } from "next/server";
 
-const repository = new PrismaProductRepository();
-
 // GET: Get a product by ID
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
-    const { id } = params; 
+    const { id } = await params;
 
-    const useCase = new GetProductUseCase(repository);
+    const useCase = getProductByIdUseCase;
 
-    const product = await useCase.execute(id);
+    const data: GetProductDTO = {
+      id: id,
+      sellerId: request.headers.get("X-User-Id")!,
+    };
 
-    return NextResponse.json(product);
+    const product = await useCase.execute(data);
+    return NextResponse.json(product, { status: 200 });
   } catch (error) {
-    console.error("Error fetching product:", error);
+    console.error("Error getting product:", error);
     return NextResponse.json(
-      { error: "Failed to fetch product" },
+      { error: "Failed to get product" },
       { status: 500 }
     );
   }
@@ -31,24 +40,23 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
-    const data = await request.json();
-    const { id } = params;
-    
-    const getUseCase = new GetProductUseCase(repository);
+    const { id } = await params;
 
-    const product = await getUseCase.execute(id);
-    if (!product) {
-      return NextResponse.json({ error: "Product not found" }, { status: 404 });
-    }
+    const body = await request.json();
 
-    product.name = data.name ?? product.name;
-    product.description = data.description ?? product.description;
-    product.price = data.price ?? product.price;
-    product.imageUrl = data.imageUrl ?? product.imageUrl;
+    const data: UpdateProductDTO = {
+      id,
+      name: body.name,
+      description: body.description,
+      price: body.price,
+      imageUrl: body.imageUrl,
+      sellerId: request.headers.get("X-User-Id")!,
+    };
 
-    const updateUseCase = new UpdateProductUseCase(repository);
-    const updatedProduct = await updateUseCase.execute(id, product);
-    return NextResponse.json(updatedProduct);
+    const updateUseCase = updateProductUseCase;
+
+    const product = await updateUseCase.execute(data);
+    return NextResponse.json(product, { status: 200 });
   } catch (error) {
     console.error("Error updating product:", error);
     return NextResponse.json(
@@ -59,13 +67,21 @@ export async function PUT(
 }
 
 // DELETE: Delete a product by ID
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
-    const useCase = new DeleteProductUseCase(repository);
+    const useCase = deleteProductUseCase;
 
-    await useCase.execute(id);
+    const data: DeleteProductDTO = {
+      id: id,
+      sellerId: request.headers.get("X-User-Id")!,
+    };
+
+    await useCase.execute(data);
 
     return NextResponse.json({ message: "Product deleted successfully" });
   } catch (error) {
