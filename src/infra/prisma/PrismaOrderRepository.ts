@@ -9,7 +9,6 @@ export class PrismaOrderRepository implements IOrderRepository {
   async create(order: Order): Promise<Order> {
     const createdOrder = await prisma.order.create({
       data: {
-        id: order.id,
         status: order.status,
         amount: order.amount,
         sellerId: order.sellerId,
@@ -17,6 +16,7 @@ export class PrismaOrderRepository implements IOrderRepository {
           create: order.items.map((item) => ({
             productId: item.productId,
             quantity: item.quantity,
+            priceAtPurchase: item.priceAtPurchase,
           })),
         },
       },
@@ -26,13 +26,56 @@ export class PrismaOrderRepository implements IOrderRepository {
     });
 
     return Order.reconstitute(createdOrder.id, {
-      status: this.mapPrismaEnumToOrderStatus(createdOrder.status),
-      amount: createdOrder.amount.toNumber(),
       sellerId: createdOrder.sellerId,
       items: createdOrder.items.map((item) =>
-        OrderItem.reconstitute(createdOrder.id, item.productId, {
-          quantity: item.quantity,
-        })
+        OrderItem.create(
+          item.productId,
+          item.quantity,
+          item.priceAtPurchase.toNumber()
+        )
+      ),
+    });
+  }
+
+  async addItem(orderId: string, item: OrderItem): Promise<Order> {
+    await prisma.orderItem.upsert({
+      where: {
+        orderId_productId: {
+          orderId: orderId,
+          productId: item.productId,
+        },
+      },
+      create: {
+        orderId: orderId,
+        productId: item.productId,
+        quantity: item.quantity,
+        priceAtPurchase: item.priceAtPurchase,
+      },
+      update: {
+        quantity: {
+          increment: item.quantity,
+        },
+        priceAtPurchase: item.priceAtPurchase,
+      },
+    });
+
+    const updatedOrder = await prisma.order.findUnique({
+      where: { id: orderId },
+      include: { items: true },
+    });
+    
+    if (!updatedOrder) {
+      throw new Error("Order not found");
+    }
+
+    return Order.reconstitute(updatedOrder.id, {
+      sellerId: updatedOrder.sellerId,
+      items: updatedOrder.items.map((item) =>
+        OrderItem.create(
+          item.productId,
+          item.quantity,
+          item.priceAtPurchase.toNumber()
+        )
       ),
     });
   }
@@ -46,13 +89,13 @@ export class PrismaOrderRepository implements IOrderRepository {
     if (!foundOrder) return null;
 
     return Order.reconstitute(foundOrder.id, {
-      status: this.mapPrismaEnumToOrderStatus(foundOrder.status),
-      amount: foundOrder.amount.toNumber(),
       sellerId: foundOrder.sellerId,
       items: foundOrder.items.map((item) =>
-        OrderItem.reconstitute(foundOrder.id, item.productId, {
-          quantity: item.quantity,
-        })
+        OrderItem.create(
+          item.productId,
+          item.quantity,
+          item.priceAtPurchase.toNumber()
+        )
       ),
     });
   }
@@ -65,13 +108,35 @@ export class PrismaOrderRepository implements IOrderRepository {
 
     return foundOrders.map((order) =>
       Order.reconstitute(order.id, {
-        status: this.mapPrismaEnumToOrderStatus(order.status),
-        amount: order.amount.toNumber(),
         sellerId: order.sellerId,
         items: order.items.map((item) =>
-          OrderItem.reconstitute(order.id, item.productId, {
-            quantity: item.quantity,
-          })
+          OrderItem.create(
+            item.productId,
+            item.quantity,
+            item.priceAtPurchase.toNumber()
+          )
+        ),
+      })
+    );
+  }
+
+  async findAllByStatus(status: OrderStatus): Promise<Order[]> {
+    const prismaEnum = this.mapOrderStatusToPrismaEnum(status);
+
+    const foundOrders = await prisma.order.findMany({
+      where: { status: prismaEnum },
+      include: { items: true },
+    });
+
+    return foundOrders.map((order) =>
+      Order.reconstitute(order.id, {
+        sellerId: order.sellerId,
+        items: order.items.map((item) =>
+          OrderItem.create(
+            item.productId,
+            item.quantity,
+            item.priceAtPurchase.toNumber()
+          )
         ),
       })
     );
@@ -83,17 +148,22 @@ export class PrismaOrderRepository implements IOrderRepository {
       data: {
         status: order.status,
         amount: order.amount,
-      }
+        items: {
+          deleteMany: {},
+          create: order.items.map((item) => ({
+            productId: item.productId,
+            quantity: item.quantity,
+            priceAtPurchase: item.priceAtPurchase,
+          })),
+        },
+      },
+      include: { items: true },
     });
 
     return Order.reconstitute(updatedOrder.id, {
-      status: this.mapPrismaEnumToOrderStatus(updatedOrder.status),
-      amount: updatedOrder.amount.toNumber(),
       sellerId: updatedOrder.sellerId,
       items: order.items.map((item) =>
-        OrderItem.reconstitute(updatedOrder.id, item.productId, {
-          quantity: item.quantity,
-        })
+        OrderItem.create(item.productId, item.quantity, item.priceAtPurchase)
       ),
     });
   }
@@ -102,14 +172,14 @@ export class PrismaOrderRepository implements IOrderRepository {
     await prisma.order.delete({ where: { id: id } });
   }
 
-  private mapPrismaEnumToOrderStatus(status: $Enums.OrderStatus): OrderStatus {
+  private mapOrderStatusToPrismaEnum(status: OrderStatus): $Enums.OrderStatus {
     switch (status) {
-      case $Enums.OrderStatus.PENDING:
-        return OrderStatus.PENDING;
-      case $Enums.OrderStatus.COMPLETED:
-        return OrderStatus.COMPLETED;
-      case $Enums.OrderStatus.CANCELLED:
-        return OrderStatus.CANCELLED;
+      case OrderStatus.PENDING:
+        return $Enums.OrderStatus.PENDING;
+      case OrderStatus.COMPLETED:
+        return $Enums.OrderStatus.COMPLETED;
+      case OrderStatus.CANCELLED:
+        return $Enums.OrderStatus.CANCELLED;
       default:
         throw new Error("Invalid order status");
     }

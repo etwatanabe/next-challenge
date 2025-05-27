@@ -60,7 +60,7 @@ export class PrismaSellerRepository implements ISellerRepository {
     return this.toDomain(foundSeller, domainProducts, domainOrders);
   }
 
-  async findByEmail(email: Seller["email"]): Promise<Seller | null> {
+  async findByEmail(email: string): Promise<Seller | null> {
     const foundSeller = await prisma.seller.findUnique({
       where: { email: email },
       include: {
@@ -82,7 +82,7 @@ export class PrismaSellerRepository implements ISellerRepository {
     return this.toDomain(foundSeller, domainProducts, domainOrders);
   }
 
-  async update(id: Seller["id"], data: Partial<SellerProps>): Promise<Seller> {
+  async update(id: string, data: Partial<SellerProps>): Promise<Seller> {
     const updatedSeller = await prisma.seller.update({
       where: { id },
       data: {
@@ -140,15 +140,13 @@ export class PrismaSellerRepository implements ISellerRepository {
   private toDomainOrders(orders: PrismaSeller["orders"]): Order[] {
     return orders.map((order) =>
       Order.reconstitute(order.id, {
-        status: order.status,
-        amount: order.amount.toNumber(),
-        customerName: order.customerName,
-        customerEmail: order.customerEmail,
-        customerPhone: order.customerPhone,
+        sellerId: order.sellerId,
         items: order.items.map((item) =>
-          OrderItem.reconstitute(item.orderId, item.productId, {
-            quantity: item.quantity,
-          })
+          OrderItem.create(
+            item.productId,
+            item.quantity,
+            item.priceAtPurchase.toNumber()
+          )
         ),
       })
     );
