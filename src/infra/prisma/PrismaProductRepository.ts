@@ -37,9 +37,9 @@ export class PrismaProductRepository implements IProductRepository {
     });
   }
 
-  async findByName(name: string): Promise<Product | null> {
-    const foundProduct = await prisma.product.findUnique({
-      where: { name: name },
+  async findByName(name: string, sellerId: string): Promise<Product | null> {
+    const foundProduct = await prisma.product.findFirst({
+      where: { name: name, sellerId: sellerId },
     });
 
     if (!foundProduct) return null;
@@ -53,8 +53,10 @@ export class PrismaProductRepository implements IProductRepository {
     });
   }
 
-  async findAll(): Promise<Product[]> {
-    const foundProduct = await prisma.product.findMany();
+  async findAllBySellerId(sellerId: string): Promise<Product[]> {
+    const foundProduct = await prisma.product.findMany({
+      where: { sellerId: sellerId },
+    });
 
     return foundProduct.map((product) =>
       Product.reconstitute(product.id, {
@@ -70,12 +72,12 @@ export class PrismaProductRepository implements IProductRepository {
   async update(data: Product): Promise<Product> {
     const updatedProduct = await prisma.product.update({
       where: { id: data.id },
-      data: { 
+      data: {
         name: data.name,
         description: data.description,
         price: data.price,
         imageUrl: data.imageUrl,
-       },
+      },
     });
 
     return Product.reconstitute(updatedProduct.id, {
@@ -88,6 +90,6 @@ export class PrismaProductRepository implements IProductRepository {
   }
 
   async delete(id: string): Promise<void> {
-    await prisma.product.delete({ where: { id } });
+    await prisma.product.delete({ where: { id: id } });
   }
 }
