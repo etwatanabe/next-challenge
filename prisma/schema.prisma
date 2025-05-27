@@ -38,10 +38,7 @@ model Order {
   id            String         @id @default(uuid())
   status        OrderStatus    @default(PENDING)
   amount        Decimal        @db.Decimal(10, 2)
-  customerName  String
-  customerEmail String
-  customerPhone String
-  
+
   items      OrderItem[]
   sellerId      String
 
