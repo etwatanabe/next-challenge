@@ -4,7 +4,6 @@ import { verifyToken } from "@/utils/jwt";
 
 export async function middleware(request: NextRequest) {
   const token = request.cookies.get("auth_token")?.value;
-
   if (!token) {
     return NextResponse.json(
       { error: "Unauthorized - Authentication required" },
@@ -28,8 +27,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    "/api/v1/orders/:path*",
-    "/api/v1/products/:path*",
-  ],
+  matcher: ["/api/v1/orders/:path*", "/api/v1/products/:path*"],
 };
