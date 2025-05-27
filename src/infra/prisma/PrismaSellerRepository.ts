@@ -38,7 +38,7 @@ export class PrismaSellerRepository implements ISellerRepository {
     return this.toDomain(createdSeller, [], []);
   }
 
-  async findById(id: Seller["id"]): Promise<Seller | null> {
+  async findById(id: string): Promise<Seller | null> {
     const foundSeller = await prisma.seller.findUnique({
       where: { id: id },
       include: {
@@ -108,7 +108,7 @@ export class PrismaSellerRepository implements ISellerRepository {
   }
 
   async delete(id: string): Promise<void> {
-    await prisma.seller.delete({ where: { id } });
+    await prisma.seller.delete({ where: { id: id } });
   }
 
   private toDomain(
