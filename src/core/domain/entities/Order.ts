@@ -2,8 +2,6 @@ import { OrderItem } from "@/core/domain/entities/OrderItem";
 import { OrderStatus } from "@/core/domain/enums/OrderStatus";
 
 export type OrderProps = {
-  status: OrderStatus;
-  amount: number;
   items: OrderItem[];
   sellerId: string;
 };
@@ -17,10 +15,10 @@ export class Order {
 
   private constructor(id: string, props: OrderProps) {
     this.id = id;
-    this.status = props.status ?? OrderStatus.PENDING;
-    this.amount = props.amount;
-    this.items = props.items ?? [];
+    this.status = OrderStatus.PENDING;
+    this.items = props.items;
     this.sellerId = props.sellerId;
+    this.amount = this.totalPrice();
   }
 
   static create(props: OrderProps): Order {
@@ -31,17 +29,26 @@ export class Order {
     return new Order(id, props);
   }
 
-  update(props: Partial<Omit<OrderProps, "sellerId">>): void {
-    if (props.status) this.status = props.status;
-    if (props.amount) this.amount = props.amount;
+  updateStatus(status: OrderStatus): void {
+    this.status = status;
   }
 
-  addItem(orderItem: OrderItem): void {
-    const exists = this.items.find((item) => item.productId === item.productId);
+  addItem(item: OrderItem): void {
+    const exists = this.items.find((i) => i.productId === item.productId);
     if (exists) {
-      exists.quantity += orderItem.quantity;
+      exists.addQuantity(item.quantity);
     } else {
-      this.items.push(orderItem);
+      this.items.push(
+        OrderItem.create(item.productId, item.quantity, item.priceAtPurchase)
+      );
     }
+
+    this.amount = this.totalPrice();
+  }
+
+  private totalPrice(): number {
+    return this.items.reduce((total, item) => {
+      return total + item.totalPrice();
+    }, 0);
   }
 }

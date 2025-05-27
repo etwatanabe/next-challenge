@@ -1,23 +1,45 @@
-export type OrderItemProps = {
-  quantity: number;
-};
-
 export class OrderItem {
-  public readonly orderId: string;
   public readonly productId: string;
   public quantity: number;
+  public priceAtPurchase: number;
 
-  private constructor(orderId: string, productId: string, props: OrderItemProps) {
-    this.orderId = orderId;
+  private constructor(
+    productId: string,
+    quantity: number,
+    priceAtPurchase: number
+  ) {
     this.productId = productId;
-    this.quantity = props.quantity;
+    this.quantity = quantity;
+    this.priceAtPurchase = priceAtPurchase;
   }
 
-  static create(orderId: string, productId: string, props: OrderItemProps): OrderItem {
-    return new OrderItem(orderId, productId, props);
+  static create(
+    productId: string,
+    quantity: number,
+    priceAtPurchase: number
+  ): OrderItem {
+    return new OrderItem(productId, quantity, priceAtPurchase);
   }
 
-  static reconstitute(orderId: string, productId: string, props: OrderItemProps): OrderItem {
-    return new OrderItem(orderId, productId, props);
+  addQuantity(quantity: number = 1): void {
+    if (quantity <= 0) {
+      throw new Error("Quantity must be greater than zero.");
+    }
+    this.quantity += quantity;
+  }
+
+  setQuantity(quantity: number): void {
+    if (quantity < 0) {
+      throw new Error("Quantity cannot be negative.");
+    }
+    this.quantity = quantity;
+  }
+
+  update(props: Partial<Omit<OrderItem, "sellerId">>): void {
+    if (props.quantity) this.quantity = props.quantity;
+  }
+
+  totalPrice(): number {
+    return this.quantity * this.priceAtPurchase;
   }
 }
