@@ -9,7 +9,10 @@ import { PrismaSellerRepository } from "@/infra/prisma/PrismaSellerRepository";
 const productRepository = new PrismaProductRepository();
 const sellerRepository = new PrismaSellerRepository();
 
-export const listProductUseCase = new ListProductUseCase(productRepository);
+export const listProductUseCase = new ListProductUseCase(
+  productRepository,
+  sellerRepository
+);
 
 export const createProductUseCase = new CreateProductUseCase(
   productRepository,
