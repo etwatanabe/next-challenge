@@ -21,7 +21,7 @@ model Seller {
 
 model Product {
   id          String         @id @default(uuid())
-  name        String         @unique
+  name        String
   description String
   price       Decimal        @db.Decimal(10, 2)
   imageUrl    String
