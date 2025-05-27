@@ -10,6 +10,7 @@ export class OrderMapper {
       items: order.items.map((item) => ({
         productId: item.productId,
         quantity: item.quantity,
+        priceAtPurchase: item.priceAtPurchase,
       })),
     };
   }

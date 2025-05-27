@@ -7,5 +7,6 @@ export type OrderResponseDTO = {
   items: {
     productId: string;
     quantity: number;
+    priceAtPurchase: number;
   }[];
 };
