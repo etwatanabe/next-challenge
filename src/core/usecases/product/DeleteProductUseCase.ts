@@ -1,5 +1,6 @@
 import { IProductRepository } from "@/core/domain/repositories/IProductRepository";
 import { ISellerRepository } from "@/core/domain/repositories/ISellerRepository";
+import { DeleteProductDTO } from "@/core/dtos/product/DeleteProductDTO";
 
 export class DeleteProductUseCase {
   constructor(
@@ -7,31 +8,25 @@ export class DeleteProductUseCase {
     private readonly sellerRepository: ISellerRepository
   ) {}
 
-  async execute(id: string): Promise<void> {
-    const product = await this.productRepository.findById(id);
-    if (!product) {
-      throw new Error(`Could not find product with id ${id}`);
-    }
-
-    const seller = await this.sellerRepository.findById(product.sellerId);
+  async execute(data: DeleteProductDTO): Promise<void> {
+    const seller = await this.sellerRepository.findById(data.sellerId);
     if (!seller) {
-      throw new Error(`Could not find seller with id ${product.sellerId}`);
+      throw new Error(`Could not find seller with id ${data.sellerId}`);
     }
 
-    if (!seller.products.includes(product)) {
-      throw new Error(`Product with id ${id} is not associated with seller ${seller.id}`);
+    if (!seller.products.some((product) => product.id === data.id)) {
+      throw new Error(
+        `Seller with id ${data.sellerId} does not own product with id ${data.id}`
+      );
     }
 
-    // Remove the product from the seller's product list
-    seller.removeProduct(id);
-
-    // Update the seller to reflect the product deletion
-    const updatedSeller = await this.sellerRepository.update(seller.id, seller);
-    if (!updatedSeller) {
-      throw new Error(`Failed to update seller with id ${seller.id} after product deletion.`);
+    const product = await this.productRepository.findById(data.id);
+    if (!product) {
+      throw new Error(`Could not find product with id ${data.id}`);
     }
 
-    // Delete the product from the repository
-    await this.productRepository.delete(id);
+    seller.removeProduct(data.id);
+    
+    await this.productRepository.delete(data.id);
   }
 }

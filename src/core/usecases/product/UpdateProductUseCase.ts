@@ -11,20 +11,18 @@ export class UpdateProductUseCase {
   ) {}
 
   async execute(data: UpdateProductDTO): Promise<ProductResponseDTO> {
+    const seller = await this.sellerRepository.findById(data.sellerId);
+    if (!seller) {
+      throw new Error(`Could not find seller with id ${data.sellerId}`);
+    }
+
+    if(!seller.products.some(product => product.id === data.id)) {
+      throw new Error(`Seller with id ${data.sellerId} does not own product with id ${data.id}`);
+    }
+
     const product = await this.productRepository.findById(data.id);
     if (!product) {
       throw new Error(`Could not find product with id ${data.id}`);
-    }
-
-    const seller = await this.sellerRepository.findById(product.sellerId);
-    if (!seller) {
-      throw new Error(`Could not find seller with id ${product.sellerId}`);
-    }
-
-    if (!seller.products.includes(product)) {
-      throw new Error(
-        `Product with id ${data.id} is not associated with seller ${seller.id}`
-      );
     }
 
     product.update({
