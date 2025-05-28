@@ -12,7 +12,7 @@ export async function middleware(request: NextRequest) {
   });
   
   // Rotas que requerem autenticação
-  const protectedRoutes = ["/products", "/orders"];
+  const protectedRoutes = ["/dashboard/products", "/dashboard/orders"];
   const isProtectedRoute = protectedRoutes.some(route => 
     pathname.startsWith(route) || pathname === route
   );
@@ -30,11 +30,11 @@ export async function middleware(request: NextRequest) {
   
   // Redirecionar usuários autenticados tentando acessar login/registro
   if (isAuthRoute && token) {
-    return NextResponse.redirect(new URL("/products", request.url));
+    return NextResponse.redirect(new URL("/dashboard/products", request.url));
   }
   
   // Proteger rotas de API e adicionar o ID do seller no cabeçalho
-  const protectedApiRoutes = ["/api/v1/orders", "/api/v1/products"];
+  const protectedApiRoutes = ["/api/v1/dashboard/orders", "/api/v1/dashboard/products"];
   const isProtectedApiRoute = protectedApiRoutes.some(route => 
     pathname.startsWith(route)
   );
@@ -60,13 +60,13 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/products/:path*", 
-    "/orders/:path*",
-    "/api/v1/orders/:path*", 
-    "/api/v1/products/:path*",
+    "/dashboard/products/:path*", 
+    "/dashboard/orders/:path*",
+    "/api/v1/dashboard/orders/:path*", 
+    "/api/v1/dashboard/products/:path*",
     "/login",
     "/register",
-    "/products",
-    "/orders"
+    "/dashboard/products",
+    "/dashboard/orders"
   ],
 };

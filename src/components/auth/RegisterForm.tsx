@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 
 export default function RegisterForm() {
   const [name, setName] = useState("");
@@ -17,6 +18,7 @@ export default function RegisterForm() {
     setLoading(true);
 
     try {
+      // Registrar o usuário
       const res = await fetch("/api/auth/register", {
         method: "POST",
         headers: {
@@ -28,81 +30,94 @@ export default function RegisterForm() {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error || "Failed to register");
+        throw new Error(data.error || "Falha ao registrar");
       }
 
-      router.push("/login");
+      // Fazer login automaticamente após registro bem-sucedido
+      const signInResult = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
+
+      if (signInResult?.error) {
+        // Redirecionar para o login caso ocorra erro no login automático
+        router.push("/login");
+      } else {
+        // Sucesso - redirecionar para o dashboard
+        router.push("/dashboard/products");
+        router.refresh();
+      }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
+      setError(err instanceof Error ? err.message : "Ocorreu um erro");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       {error && (
-        <div className="bg-red-50 text-red-500 p-3 rounded-md text-sm">
-          {error}
+        <div className="alert alert-error">
+          <p className="text-sm">{error}</p>
         </div>
       )}
-        <div>
-          <label htmlFor="name" className="sr-only">
-            Nome
-          </label>
-          <input
-            id="name"
-            name="name"
-            type="text"
-            required
-            className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-            placeholder="Nome completo"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </div>
-        <div>
-          <label htmlFor="email" className="sr-only">
-            Email
-          </label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            autoComplete="email"
-            required
-            className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-        <div>
-          <label htmlFor="password" className="sr-only">
-            Senha
-          </label>
-          <input
-            id="password"
-            name="password"
-            type="password"
-            autoComplete="new-password"
-            required
-            className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-            placeholder="Senha"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
 
-      <div>
-        <button
-          type="submit"
-          disabled={loading}
-          className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {loading ? "Creating account..." : "Create account"}
-        </button>
+      <div className="form-group">
+        <label htmlFor="name" className="label">
+          Nome completo
+        </label>
+        <input
+          id="name"
+          name="name"
+          type="text"
+          required
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="input"
+          placeholder="Seu nome completo"
+        />
       </div>
+
+      <div className="form-group">
+        <label htmlFor="email" className="label">
+          Email
+        </label>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="input"
+          placeholder="seu@email.com"
+        />
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="password" className="label">
+          Senha
+        </label>
+        <input
+          id="password"
+          name="password"
+          type="password"
+          required
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="input"
+          placeholder="••••••••"
+        />
+      </div>
+
+      <button
+        type="submit"
+        disabled={loading}
+        className="btn btn-primary w-full mt-2"
+      >
+        {loading ? "Criando conta..." : "Criar conta"}
+      </button>
     </form>
   );
 }
