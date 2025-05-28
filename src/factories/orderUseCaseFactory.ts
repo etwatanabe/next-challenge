@@ -29,6 +29,5 @@ export const addItemToOrderUseCase = new AddItemToOrderUseCase(
 
 export const getOrderByIdUseCase = new GetOrderByIdUseCase(
   orderRepository,
-  productRepository,
   sellerRepository
 );

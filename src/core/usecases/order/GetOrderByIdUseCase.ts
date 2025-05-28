@@ -1,12 +1,10 @@
 import { IOrderRepository } from "@/core/domain/repositories/IOrderRepository";
-import { IProductRepository } from "@/core/domain/repositories/IProductRepository";
 import { ISellerRepository } from "@/core/domain/repositories/ISellerRepository";
 import { OrderMapper } from "@/core/dtos/order/OrderMapper";
 
 export class GetOrderByIdUseCase {
   constructor(
     private readonly orderRepository: IOrderRepository,
-    private readonly productRepository: IProductRepository,
     private readonly sellerRepository: ISellerRepository
   ) {}
 
