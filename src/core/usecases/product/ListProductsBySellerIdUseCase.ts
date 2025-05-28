@@ -3,7 +3,7 @@ import { ISellerRepository } from "@/core/domain/repositories/ISellerRepository"
 import { ProductMapper } from "@/core/dtos/product/ProductMapper";
 import { ProductResponseDTO } from "@/core/dtos/product/ProductResponseDTO";
 
-export class ListProductUseCase {
+export class ListProductBySellerIdUseCase {
   constructor(
     private readonly productRepository: IProductRepository,
     private readonly sellerRepository: ISellerRepository

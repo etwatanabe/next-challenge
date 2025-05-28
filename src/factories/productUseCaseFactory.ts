@@ -1,7 +1,7 @@
 import { CreateProductUseCase } from "@/core/usecases/product/CreateProductUseCase";
 import { DeleteProductUseCase } from "@/core/usecases/product/DeleteProductUseCase";
 import { GetProductByIdUseCase } from "@/core/usecases/product/GetProductByIdUseCase";
-import { ListProductUseCase } from "@/core/usecases/product/ListProductsUseCase";
+import { ListProductBySellerIdUseCase } from "@/core/usecases/product/ListProductsBySellerIdUseCase";
 import { UpdateProductUseCase } from "@/core/usecases/product/UpdateProductUseCase";
 import { PrismaProductRepository } from "@/infra/prisma/PrismaProductRepository";
 import { PrismaSellerRepository } from "@/infra/prisma/PrismaSellerRepository";
@@ -9,7 +9,7 @@ import { PrismaSellerRepository } from "@/infra/prisma/PrismaSellerRepository";
 const productRepository = new PrismaProductRepository();
 const sellerRepository = new PrismaSellerRepository();
 
-export const listProductUseCase = new ListProductUseCase(
+export const listProductBySellerIdUseCase = new ListProductBySellerIdUseCase(
   productRepository,
   sellerRepository
 );

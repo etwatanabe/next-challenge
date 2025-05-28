@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
   createProductUseCase,
-  listProductUseCase,
+  listProductBySellerIdUseCase,
 } from "@/factories/productUseCaseFactory";
 import { CreateProductDTO } from "@/core/dtos/product/CreateProductDTO";
 
@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
   try {
     const sellerId = request.headers.get("X-User-Id");
 
-    const useCase = listProductUseCase;
+    const useCase = listProductBySellerIdUseCase;
 
     const products = await useCase.execute(sellerId!);
 
