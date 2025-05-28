@@ -69,6 +69,20 @@ export class PrismaProductRepository implements IProductRepository {
     );
   }
 
+  async findAll(): Promise<Product[]> {
+    const foundProducts = await prisma.product.findMany();
+
+    return foundProducts.map((product) =>
+      Product.reconstitute(product.id, {
+        name: product.name,
+        description: product.description,
+        price: product.price.toNumber(),
+        imageUrl: product.imageUrl,
+        sellerId: product.sellerId,
+      })
+    );
+  }
+
   async update(data: Product): Promise<Product> {
     const updatedProduct = await prisma.product.update({
       where: { id: data.id },
