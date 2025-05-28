@@ -1,5 +1,5 @@
 import './globals.css'
-import { SessionProvider } from '@/components/SessionProvider'
+import { SessionProvider } from '@/contexts/SessionProvider'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/utils/auth'
 
