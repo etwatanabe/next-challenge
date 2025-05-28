@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import LoginForm from "@/components/auth/LoginForm";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Login | Seller Dashboard",
@@ -8,23 +9,30 @@ export const metadata: Metadata = {
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-xl shadow-lg">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Fazer login
-          </h2>
+    <div className="flex items-center justify-center min-h-screen bg-[var(--background)]">
+      <div className="card max-w-md w-full mx-auto my-8">
+        <div className="card-content">
+          <div className="text-center mb-4">
+            <h2 className="text-2xl font-bold">Login</h2>
+            <p className="text-muted text-sm mt-2">
+              Acesse sua conta para gerenciar produtos e pedidos
+            </p>
+          </div>
+          
+          <LoginForm />
+          
+          <div className="text-center mt-4">
+            <p className="text-sm text-muted">
+              Não possui uma conta?{" "}
+              <Link 
+                href="/register" 
+                className="text-[var(--primary)] hover:underline"
+              >
+                Cadastre-se
+              </Link>
+            </p>
+          </div>
         </div>
-        <LoginForm />
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Não possui uma conta? {" "}
-            <a
-              href="/register"
-              className="font-medium text-indigo-600 hover:text-indigo-500"
-            >
-              Cadastre-se
-            </a>
-          </p>
       </div>
     </div>
   );
