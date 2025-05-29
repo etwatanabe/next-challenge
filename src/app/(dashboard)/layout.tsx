@@ -10,11 +10,5 @@ export default async function RootLayout({
 }) {
   const session = await getServerSession(authOptions);
 
-  return (
-    <html lang="pt-br">
-      <body>
-        <SessionProvider session={session}>{children}</SessionProvider>
-      </body>
-    </html>
-  );
+  return <SessionProvider session={session}>{children}</SessionProvider>;
 }
