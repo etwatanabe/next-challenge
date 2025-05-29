@@ -6,12 +6,12 @@ export const metadata: Metadata = {
   description: "Seu pedido foi confirmado com sucesso",
 };
 
-export default function OrderConfirmationPage({
+export default async function OrderConfirmationPage({
   params,
 }: {
   params: { id: string };
 }) {
-  const orderId = params.id;
+  const orderId = await params.id;
 
   return (
     <div className="min-h-screen bg-[var(--background)]">
@@ -44,12 +44,13 @@ export default function OrderConfirmationPage({
               </div>
             </div>
 
-            <h2 className="text-2xl font-bold mb-2">Pedido Confirmado!</h2>
+            <h2 className="text-2xl font-bold mb-2">Pagamento Confirmado!</h2>
             <p className="text-muted mb-6">
-              Obrigado pela sua compra. Seu pedido foi recebido e está sendo
-              processado.
+              Obrigado pela sua compra. Seu pagamento foi processado com sucesso
+              e seu pedido está sendo preparado.
             </p>
 
+            {/* Detalhes do pedido */}
             <div className="bg-[color:rgba(var(--foreground),0.03)] rounded-md p-4 mb-6">
               <p className="font-medium">Número do pedido:</p>
               <p className="text-lg">{orderId.substring(0, 8)}</p>
@@ -60,7 +61,7 @@ export default function OrderConfirmationPage({
               atualizações sobre o status do envio.
             </p>
 
-            <Link href="/" className="btn btn-primary">
+            <Link href="/products" className="btn btn-primary">
               Voltar para loja
             </Link>
           </div>
