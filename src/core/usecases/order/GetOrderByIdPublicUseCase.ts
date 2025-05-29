@@ -1,0 +1,19 @@
+import { IOrderRepository } from "@/core/domain/repositories/IOrderRepository";
+import { OrderMapper } from "@/core/dtos/order/OrderMapper";
+
+export class GetOrderByIdPublicUseCase {
+  constructor(
+    private readonly orderRepository: IOrderRepository,
+  ) {}
+
+  async execute(id: string) {
+    const order = await this.orderRepository.findById(id);
+    if (!order) {
+      throw new Error(`Order with ID ${id} not found.`);
+    }
+
+    return OrderMapper.toResponseDTO(order);
+  }
+
+
+}
