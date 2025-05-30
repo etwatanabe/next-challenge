@@ -20,47 +20,36 @@ model Seller {
 }
 
 model Product {
-  id          String      @id @default(uuid())
+  id          String  @id @default(uuid())
   name        String
   description String
-  price       Decimal     @db.Decimal(10, 2)
+  price       Decimal @db.Decimal(10, 2)
   imageUrl    String
   sellerId    String
-  orders      OrderItem[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  seller Seller @relation(fields: [sellerId], references: [id])
+  seller Seller  @relation(fields: [sellerId], references: [id])
+  Order  Order[]
 }
 
 model Order {
-  id     String      @id @default(uuid())
-  status OrderStatus @default(PENDING)
-  amount Decimal     @db.Decimal(10, 2)
+  id        String      @id @default(uuid())
+  sellerId  String
+  productId String
+  status    OrderStatus @default(PENDING)
 
-  items    OrderItem[]
-  sellerId String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  seller Seller @relation(fields: [sellerId], references: [id])
-}
-
-model OrderItem {
-  orderId         String
-  productId       String
-  quantity        Int
-  priceAtPurchase Decimal @db.Decimal(10, 2)
+  customerName    String
+  customerEmail   String
+  customerPhone   String
+  customerAddress String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  order   Order   @relation(fields: [orderId], references: [id])
+  seller  Seller  @relation(fields: [sellerId], references: [id])
   product Product @relation(fields: [productId], references: [id])
-
-  @@id([orderId, productId])
 }
 
 enum OrderStatus {
