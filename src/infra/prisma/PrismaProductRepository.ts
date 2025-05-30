@@ -1,5 +1,6 @@
 import { IProductRepository } from "@/core/domain/repositories/IProductRepository";
 import { Product } from "@/core/domain/entities/Product";
+import { Product as PrismaProduct } from "@prisma/client";
 import prisma from "@/infra/lib/prisma";
 
 export class PrismaProductRepository implements IProductRepository {
@@ -14,13 +15,7 @@ export class PrismaProductRepository implements IProductRepository {
       },
     });
 
-    return Product.reconstitute(createdProduct.id, {
-      name: createdProduct.name,
-      description: createdProduct.description,
-      price: createdProduct.price.toNumber(),
-      imageUrl: createdProduct.imageUrl,
-      sellerId: createdProduct.sellerId,
-    });
+    return this.reconstituteProduct(createdProduct);
   }
 
   async findById(id: string): Promise<Product | null> {
@@ -28,13 +23,7 @@ export class PrismaProductRepository implements IProductRepository {
 
     if (!foundProduct) return null;
 
-    return Product.reconstitute(foundProduct.id, {
-      name: foundProduct.name,
-      description: foundProduct.description,
-      price: foundProduct.price.toNumber(),
-      imageUrl: foundProduct.imageUrl,
-      sellerId: foundProduct.sellerId,
-    });
+    return this.reconstituteProduct(foundProduct);
   }
 
   async findByName(name: string, sellerId: string): Promise<Product | null> {
@@ -44,13 +33,7 @@ export class PrismaProductRepository implements IProductRepository {
 
     if (!foundProduct) return null;
 
-    return Product.reconstitute(foundProduct.id, {
-      name: foundProduct.name,
-      description: foundProduct.description,
-      price: foundProduct.price.toNumber(),
-      imageUrl: foundProduct.imageUrl,
-      sellerId: foundProduct.sellerId,
-    });
+    return this.reconstituteProduct(foundProduct);
   }
 
   async findAllBySellerId(sellerId: string): Promise<Product[]> {
@@ -73,14 +56,7 @@ export class PrismaProductRepository implements IProductRepository {
     const foundProducts = await prisma.product.findMany();
 
     return foundProducts.map((product) =>
-      Product.reconstitute(product.id, {
-        name: product.name,
-        description: product.description,
-        price: product.price.toNumber(),
-        imageUrl: product.imageUrl,
-        sellerId: product.sellerId,
-      })
-    );
+      this.reconstituteProduct(product));
   }
 
   async update(data: Product): Promise<Product> {
@@ -94,16 +70,20 @@ export class PrismaProductRepository implements IProductRepository {
       },
     });
 
-    return Product.reconstitute(updatedProduct.id, {
-      name: updatedProduct.name,
-      description: updatedProduct.description,
-      price: updatedProduct.price.toNumber(),
-      imageUrl: updatedProduct.imageUrl,
-      sellerId: updatedProduct.sellerId,
-    });
+    return this.reconstituteProduct(updatedProduct);
   }
 
   async delete(id: string): Promise<void> {
     await prisma.product.delete({ where: { id: id } });
+  }
+
+  private reconstituteProduct(product: PrismaProduct): Product {
+    return Product.reconstitute(product.id, {
+      name: product.name,
+      description: product.description,
+      price: product.price.toNumber(),
+      imageUrl: product.imageUrl,
+      sellerId: product.sellerId,
+    });
   }
 }
