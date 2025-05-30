@@ -5,13 +5,13 @@ export class OrderMapper {
   static toResponseDTO(order: Order): OrderResponseDTO {
     return {
       id: order.id,
+      sellerId: order.sellerId,
+      productId: order.productId,
       status: order.status,
-      amount: order.amount,
-      items: order.items.map((item) => ({
-        productId: item.productId,
-        quantity: item.quantity,
-        priceAtPurchase: item.priceAtPurchase,
-      })),
+      customerName: order.customerName,
+      customerEmail: order.customerEmail,
+      customerPhone: order.customerPhone,
+      customerAddress: order.customerAddress,      
     };
   }
 }
