@@ -81,14 +81,7 @@ export default function CustomerProductGrid() {
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
-        <div className="relative w-full sm:max-w-xs">
-          <input
-            type="text"
-            placeholder="Buscar produtos..."
-            className="input pl-9 w-full"
-            value={filters.search}
-            onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-          />
+        <div className="w-full sm:max-w-xs flex items-center border rounded-md focus-within:ring-2 focus-within:ring-blue-500 px-3 py-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="18"
@@ -99,11 +92,18 @@ export default function CustomerProductGrid() {
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
-            className="text-muted absolute left-3 top-1/2 transform -translate-y-1/2"
+            className="text-muted mr-2 flex-shrink-0"
           >
             <circle cx="11" cy="11" r="8" />
             <path d="m21 21-4.35-4.35" />
           </svg>
+          <input
+            type="text"
+            placeholder="Buscar produtos..."
+            className="w-full outline-none bg-transparent"
+            value={filters.search}
+            onChange={(e) => setFilters({ ...filters, search: e.target.value })}
+          />
         </div>
 
         <div className="w-full sm:w-auto">
