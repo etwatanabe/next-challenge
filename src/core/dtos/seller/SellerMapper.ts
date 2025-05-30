@@ -1,7 +1,7 @@
 import { Seller } from "@/core/domain/entities/Seller";
 import { SellerResponseDTO } from "./SellerResponseDTO";
 
-export class OrderMapper {
+export class SellerMapper {
   static toResponseDTO(seller: Seller): SellerResponseDTO {
     return {
       id: seller.id,
