@@ -10,9 +10,9 @@ export async function GET() {
 
     return NextResponse.json(product, { status: 200 });
   } catch (error) {
-    console.error("Erro ao buscar produto:", error);
+    console.error("Error fetching product:", error);
     return NextResponse.json(
-      { error: "Falha ao buscar produto" },
+      { error: "Internal Server Error" },
       { status: 500 }
     );
   }

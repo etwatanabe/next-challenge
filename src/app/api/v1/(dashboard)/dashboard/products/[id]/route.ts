@@ -28,7 +28,7 @@ export async function GET(
   } catch (error) {
     console.error("Error getting product:", error);
     return NextResponse.json(
-      { error: "Failed to get product" },
+      { error: "Internal Server Error" },
       { status: 500 }
     );
   }
@@ -60,7 +60,7 @@ export async function PUT(
   } catch (error) {
     console.error("Error updating product:", error);
     return NextResponse.json(
-      { error: "Failed to update product" },
+      { error: "Internal Server Error" },
       { status: 500 }
     );
   }
@@ -87,7 +87,7 @@ export async function DELETE(
   } catch (error) {
     console.error("Error deleting product:", error);
     return NextResponse.json(
-      { error: "Failed to delete product" },
+      { error: "Internal Server Error" },
       { status: 500 }
     );
   }

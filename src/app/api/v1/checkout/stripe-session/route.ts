@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import stripe from "@/utils/stripe";
 import { getOrderByIdPublicUseCase } from "@/factories/orderUseCaseFactory";
+import stripe from "@/utils/stripe";
 
 export async function POST(request: NextRequest) {
   try {
@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
 
     if (!orderId) {
       return NextResponse.json(
-        { error: "ID do pedido não fornecido" },
+        { error: "Order ID is required" },
         { status: 400 }
       );
     }
@@ -17,8 +17,8 @@ export async function POST(request: NextRequest) {
     const order = await getOrderByIdPublicUseCase.execute(orderId);
     if (!order) {
       return NextResponse.json(
-        { error: "Pedido não encontrado" },
-        { status: 404 }
+        { error: "Order not found" },
+        { status: 204 }
       );
     }
 
@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
       price_data: {
         currency: 'brl',
         product_data: {
-          name: `Produto #${item.productId.substring(0, 8)}`, // Idealmente, use o nome real do produto
+          name: `Produto #${item.productId.substring(0, 8)}`,
           description: `Quantidade: ${item.quantity}`,
         },
         unit_amount: Math.round(item.priceAtPurchase * 100), // Stripe usa centavos
@@ -49,9 +49,9 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ sessionId: session.id }, { status: 200 });
   } catch (error) {
-    console.error("Erro ao criar sessão do Stripe:", error);
+    console.error("Error creating stripe session:", error);
     return NextResponse.json(
-      { error: "Falha ao processar pagamento" },
+      { error: "Internal Server Error" },
       { status: 500 }
     );
   }

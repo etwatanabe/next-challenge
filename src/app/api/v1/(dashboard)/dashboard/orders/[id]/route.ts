@@ -24,7 +24,7 @@ export async function PUT(
   } catch (error) {
     console.error("Error adding item to order:", error);
     return NextResponse.json(
-      { error: "Failed to add item to order" },
+      { error: "Internal Server Error" },
       { status: 500 }
     );
   }
@@ -47,6 +47,9 @@ export async function GET(
     return NextResponse.json(order, { status: 200 });
   } catch (error) {
     console.error("Error getting order:", error);
-    return NextResponse.json({ error: "Failed to get order" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

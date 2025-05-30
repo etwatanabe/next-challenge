@@ -13,16 +13,16 @@ export async function GET(
 
     if (!order) {
       return NextResponse.json(
-        { error: "Pedido não encontrado" },
-        { status: 404 }
+        { error: "Order not found" },
+        { status: 204 }
       );
     }
 
     return NextResponse.json(order, { status: 200 });
   } catch (error) {
-    console.error("Erro ao buscar pedido:", error);
+    console.error("Error fetching order:", error);
     return NextResponse.json(
-      { error: "Falha ao buscar pedido" },
+      { error: "Internal Server Error" },
       { status: 500 }
     );
   }

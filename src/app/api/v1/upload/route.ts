@@ -9,14 +9,14 @@ export async function POST(request: NextRequest) {
 
     if (!file) {
       return NextResponse.json(
-        { error: "Nenhum arquivo enviado" },
+        { error: "File not provided" },
         { status: 400 }
       );
     }
 
     if (!file.type.startsWith("image/")) {
       return NextResponse.json(
-        { error: "Arquivo não é uma imagem válida" },
+        { error: "File must be an image" },
         { status: 400 }
       );
     }
@@ -26,6 +26,7 @@ export async function POST(request: NextRequest) {
     const buffer = Buffer.from(await file.arrayBuffer());
 
     const filePath = path.join(process.cwd(), "public/uploads", fileName);
+    // Ensure the uploads directory exists
 
     await writeFile(filePath, buffer);
 
@@ -35,7 +36,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Error uploading file", error);
     return NextResponse.json(
-      { error: "Failed to process file" },
+      { error: "Internal Server Error" },
       { status: 500 }
     );
   }

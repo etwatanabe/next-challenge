@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error("Error fetching orders:", error);
     return NextResponse.json(
-      { error: "Failed to fetch orders" },
+      { error: "Internal Server error" },
       { status: 500 }
     );
   }
@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Error creating order:", error);
     return NextResponse.json(
-      { error: "Failed to create order" },
+      { error: "Internal Server Error" },
       { status: 500 }
     );
   }
