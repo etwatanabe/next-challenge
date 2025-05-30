@@ -1,41 +1,32 @@
-import { Prisma } from "@prisma/client";
-import { Order } from "@/core/domain/entities/Order";
-import { OrderItem } from "@/core/domain/entities/OrderItem";
-import { Product } from "@/core/domain/entities/Product";
-import { Seller, SellerProps } from "@/core/domain/entities/Seller";
 import { ISellerRepository } from "@/core/domain/repositories/ISellerRepository";
+import { Seller } from "@/core/domain/entities/Seller";
+import { Product } from "@/core/domain/entities/Product";
+import { Order } from "@/core/domain/entities/Order";
+import { OrderStatus } from "@/core/domain/enums/OrderStatus";
+import { Seller as PrismaSeller } from "@prisma/client";
+import { Product as PrismaProduct } from "@prisma/client";
+import { Order as PrismaOrder } from "@prisma/client";
 import prisma from "@/infra/lib/prisma";
 
-type PrismaSeller = Prisma.SellerGetPayload<{
-  include: {
-    products: true;
-    orders: {
-      include: {
-        items: true;
-      };
-    };
-  };
-}>;
-
 export class PrismaSellerRepository implements ISellerRepository {
-  async create(data: SellerProps): Promise<Seller> {
+  async create(seller: Seller): Promise<Seller> {
     const createdSeller = await prisma.seller.create({
       data: {
-        name: data.name,
-        email: data.email,
-        password: data.password,
+        name: seller.name,
+        email: seller.email,
+        password: seller.password,
       },
       include: {
         products: true,
-        orders: {
-          include: {
-            items: true,
-          },
-        },
+        orders: true,
       },
     });
 
-    return this.toDomain(createdSeller, [], []);
+    return this.reconstituteSeller(
+      createdSeller,
+      createdSeller.orders,
+      createdSeller.products
+    );
   }
 
   async findById(id: string): Promise<Seller | null> {
@@ -43,21 +34,17 @@ export class PrismaSellerRepository implements ISellerRepository {
       where: { id: id },
       include: {
         products: true,
-        orders: {
-          include: {
-            items: true,
-          },
-        },
+        orders: true,
       },
     });
 
     if (!foundSeller) return null;
 
-    const domainProducts = this.toDomainProducts(foundSeller.products);
-
-    const domainOrders = this.toDomainOrders(foundSeller.orders);
-
-    return this.toDomain(foundSeller, domainProducts, domainOrders);
+    return this.reconstituteSeller(
+      foundSeller,
+      foundSeller.orders,
+      foundSeller.products
+    );
   }
 
   async findByEmail(email: string): Promise<Seller | null> {
@@ -65,90 +52,82 @@ export class PrismaSellerRepository implements ISellerRepository {
       where: { email: email },
       include: {
         products: true,
-        orders: {
-          include: {
-            items: true,
-          },
-        },
+        orders: true,
       },
     });
 
     if (!foundSeller) return null;
 
-    const domainProducts = this.toDomainProducts(foundSeller.products);
-
-    const domainOrders = this.toDomainOrders(foundSeller.orders);
-
-    return this.toDomain(foundSeller, domainProducts, domainOrders);
+    return this.reconstituteSeller(
+      foundSeller,
+      foundSeller.orders,
+      foundSeller.products
+    );
   }
 
-  async update(id: string, data: Partial<SellerProps>): Promise<Seller> {
+  async update(seller: Seller): Promise<Seller> {
     const updatedSeller = await prisma.seller.update({
-      where: { id },
+      where: { id: seller.id },
       data: {
-        name: data.name,
-        email: data.email,
-        password: data.password,
+        name: seller.name,
+        email: seller.email,
+        password: seller.password,
       },
       include: {
         products: true,
-        orders: {
-          include: {
-            items: true,
-          },
-        },
+        orders: true,
       },
     });
 
-    const domainProducts = this.toDomainProducts(updatedSeller.products);
-
-    const domainOrders = this.toDomainOrders(updatedSeller.orders);
-
-    return this.toDomain(updatedSeller, domainProducts, domainOrders);
+    return this.reconstituteSeller(
+      updatedSeller,
+      updatedSeller.orders,
+      updatedSeller.products
+    );
   }
 
   async delete(id: string): Promise<void> {
     await prisma.seller.delete({ where: { id: id } });
   }
 
-  private toDomain(
+  private reconstituteProduct(product: PrismaProduct): Product {
+    return Product.reconstitute(product.id, {
+      name: product.name,
+      description: product.description,
+      price: product.price.toNumber(),
+      imageUrl: product.imageUrl,
+      sellerId: product.sellerId,
+    });
+  }
+
+  private reconstituteOrder(order: PrismaOrder): Order {
+    return Order.reconstitute(order.id, {
+      sellerId: order.sellerId,
+      productId: order.productId,
+      status: order.status as OrderStatus,
+      customerName: order.customerName,
+      customerEmail: order.customerEmail,
+      customerPhone: order.customerPhone,
+      customerAddress: order.customerAddress,
+    });
+  }
+
+  private reconstituteSeller(
     seller: PrismaSeller,
-    products: Product[],
-    orders: Order[]
+    orders: PrismaOrder[],
+    products: PrismaProduct[]
   ): Seller {
+    const domainOrders = orders.map((order) => this.reconstituteOrder(order));
+    const domainProducts = products.map((product) =>
+      this.reconstituteProduct(product)
+    );
+
     return Seller.reconstitute(seller.id, {
       name: seller.name,
       email: seller.email,
       password: seller.password,
-      products: products,
-      orders: orders,
+      products: domainProducts,
+      orders: domainOrders,
     });
-  }
-
-  private toDomainProducts(products: PrismaSeller["products"]): Product[] {
-    return products.map((product) =>
-      Product.reconstitute(product.id, {
-        name: product.name,
-        description: product.description,
-        price: product.price.toNumber(),
-        imageUrl: product.imageUrl,
-        sellerId: product.sellerId,
-      })
-    );
-  }
-
-  private toDomainOrders(orders: PrismaSeller["orders"]): Order[] {
-    return orders.map((order) =>
-      Order.reconstitute(order.id, {
-        sellerId: order.sellerId,
-        items: order.items.map((item) =>
-          OrderItem.create(
-            item.productId,
-            item.quantity,
-            item.priceAtPurchase.toNumber()
-          )
-        ),
-      })
-    );
   }
 }

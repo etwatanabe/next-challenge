@@ -27,14 +27,6 @@ export class Seller {
   }
 
   static create(props: SellerProps): Seller {
-    if (!Seller.isValidEmail(props.email)) {
-      throw new Error("Invalid email format");
-    }
-
-    if (!props.name || props.name.trim().length < 2) {
-      throw new Error("Name must have at least 2 characters");
-    }
-
     return new Seller(crypto.randomUUID(), props);
   }
 
@@ -56,10 +48,5 @@ export class Seller {
       throw new Error(`Product with id ${id} not found`);
     }
     this.products.splice(productIndex, 1);
-  }
-
-  private static isValidEmail(email: string): boolean {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
   }
 }
