@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
     if (!order) {
       return NextResponse.json(
         { error: "Order not found" },
-        { status: 204 }
+        { status: 404 }
       );
     }
 
