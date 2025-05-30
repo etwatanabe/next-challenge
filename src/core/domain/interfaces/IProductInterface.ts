@@ -1,6 +1,6 @@
 import { Product } from "@/core/domain/entities/Product";
 
-export interface IProductRepository {
+export interface IProductInterface {
   create(product: Product): Promise<Product>;
   findById(id: string): Promise<Product | null>;
   findByName(name: string, sellerId: string): Promise<Product | null>;

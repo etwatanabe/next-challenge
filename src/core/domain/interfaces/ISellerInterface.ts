@@ -1,6 +1,6 @@
 import { Seller } from "@/core/domain/entities/Seller";
 
-export interface ISellerRepository {
+export interface ISellerInterface {
   create(seller: Seller): Promise<Seller>;
   findById(id: string): Promise<Seller | null>;
   findByEmail(email: string): Promise<Seller | null>;

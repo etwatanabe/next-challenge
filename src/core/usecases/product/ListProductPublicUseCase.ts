@@ -1,4 +1,4 @@
-import { IProductRepository } from "@/core/domain/repositories/IProductRepository";
+import { IProductRepository } from "@/core/domain/interfaces/IProductInterface";
 import { ProductMapper } from "@/core/dtos/product/ProductMapper";
 
 export class ListProductPublicUseCase {

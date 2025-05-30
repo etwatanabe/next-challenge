@@ -1,6 +1,6 @@
 import { UpdateProductDTO } from "@/core/dtos/product/UpdateProductDTO";
-import { IProductRepository } from "@/core/domain/repositories/IProductRepository";
-import { ISellerRepository } from "@/core/domain/repositories/ISellerRepository";
+import { IProductRepository } from "@/core/domain/interfaces/IProductInterface";
+import { ISellerRepository } from "@/core/domain/interfaces/ISellerInterface";
 import { ProductMapper } from "@/core/dtos/product/ProductMapper";
 import { ProductResponseDTO } from "@/core/dtos/product/ProductResponseDTO";
 
@@ -16,8 +16,10 @@ export class UpdateProductUseCase {
       throw new Error(`Could not find seller with id ${data.sellerId}`);
     }
 
-    if(!seller.products.some(product => product.id === data.id)) {
-      throw new Error(`Seller with id ${data.sellerId} does not own product with id ${data.id}`);
+    if (!seller.products.some((product) => product.id === data.id)) {
+      throw new Error(
+        `Seller with id ${data.sellerId} does not own product with id ${data.id}`
+      );
     }
 
     const product = await this.productRepository.findById(data.id);

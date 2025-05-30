@@ -1,5 +1,5 @@
-import { IOrderRepository } from "@/core/domain/repositories/IOrderRepository";
-import { ISellerRepository } from "@/core/domain/repositories/ISellerRepository";
+import { IOrderRepository } from "@/core/domain/interfaces/IOrderInterface";
+import { ISellerRepository } from "@/core/domain/interfaces/ISellerInterface";
 import { OrderMapper } from "@/core/dtos/order/OrderMapper";
 import { OrderResponseDTO } from "@/core/dtos/order/OrderResponseDTO";
 

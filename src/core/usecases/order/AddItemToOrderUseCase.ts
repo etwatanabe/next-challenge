@@ -1,10 +1,10 @@
 import { OrderStatus } from "@/core/domain/enums/OrderStatus";
 import { OrderMapper } from "@/core/dtos/order/OrderMapper";
-import { IOrderRepository } from "@/core/domain/repositories/IOrderRepository";
+import { IOrderRepository } from "@/core/domain/interfaces/IOrderInterface";
 import { OrderResponseDTO } from "@/core/dtos/order/OrderResponseDTO";
-import { IProductRepository } from "@/core/domain/repositories/IProductRepository";
+import { IProductRepository } from "@/core/domain/interfaces/IProductInterface";
 import { OrderItem } from "@/core/domain/entities/OrderItem";
-import { ISellerRepository } from "@/core/domain/repositories/ISellerRepository";
+import { ISellerRepository } from "@/core/domain/interfaces/ISellerInterface";
 
 export class AddItemToOrderUseCase {
   constructor(

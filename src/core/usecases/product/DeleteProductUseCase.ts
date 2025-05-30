@@ -1,5 +1,5 @@
-import { IProductRepository } from "@/core/domain/repositories/IProductRepository";
-import { ISellerRepository } from "@/core/domain/repositories/ISellerRepository";
+import { IProductRepository } from "@/core/domain/interfaces/IProductInterface";
+import { ISellerRepository } from "@/core/domain/interfaces/ISellerInterface";
 import { DeleteProductDTO } from "@/core/dtos/product/DeleteProductDTO";
 
 export class DeleteProductUseCase {
@@ -26,7 +26,7 @@ export class DeleteProductUseCase {
     }
 
     seller.removeProduct(data.id);
-    
+
     await this.productRepository.delete(data.id);
   }
 }

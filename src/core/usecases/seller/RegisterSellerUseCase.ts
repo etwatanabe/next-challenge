@@ -1,4 +1,4 @@
-import { ISellerRepository } from "@/core/domain/repositories/ISellerRepository";
+import { ISellerRepository } from "@/core/domain/interfaces/ISellerInterface";
 import { Seller, SellerProps } from "@/core/domain/entities/Seller";
 import bcryptjs from "bcryptjs";
 

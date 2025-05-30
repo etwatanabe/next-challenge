@@ -1,5 +1,5 @@
-import { IProductRepository } from "@/core/domain/repositories/IProductRepository";
-import { ISellerRepository } from "@/core/domain/repositories/ISellerRepository";
+import { IProductRepository } from "@/core/domain/interfaces/IProductInterface";
+import { ISellerRepository } from "@/core/domain/interfaces/ISellerInterface";
 import { ProductResponseDTO } from "@/core/dtos/product/ProductResponseDTO";
 import { CreateProductDTO } from "@/core/dtos/product/CreateProductDTO";
 import { Product } from "@/core/domain/entities/Product";
@@ -19,7 +19,10 @@ export class CreateProductUseCase {
       );
     }
 
-    const existingProduct = await this.productRepository.findByName(data.name, data.sellerId);
+    const existingProduct = await this.productRepository.findByName(
+      data.name,
+      data.sellerId
+    );
     if (existingProduct) {
       throw new Error(`Product with name ${data.name} already exists.`);
     }

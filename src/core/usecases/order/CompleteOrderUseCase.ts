@@ -1,5 +1,5 @@
 import { OrderStatus } from "@/core/domain/enums/OrderStatus";
-import { IOrderRepository } from "@/core/domain/repositories/IOrderRepository";
+import { IOrderRepository } from "@/core/domain/interfaces/IOrderInterface";
 import { OrderMapper } from "@/core/dtos/order/OrderMapper";
 import { OrderResponseDTO } from "@/core/dtos/order/OrderResponseDTO";
 
@@ -27,8 +27,6 @@ export class CompleteOrderUseCase {
 
     // Atualizar o status do pedido para "concluído"
     order.updateStatus(OrderStatus.COMPLETED);
-
-    
 
     // Adicionar informações de pagamento ao pedido
     // order.addPaymentInfo({

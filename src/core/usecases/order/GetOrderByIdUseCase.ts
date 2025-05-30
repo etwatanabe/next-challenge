@@ -1,5 +1,5 @@
-import { IOrderRepository } from "@/core/domain/repositories/IOrderRepository";
-import { ISellerRepository } from "@/core/domain/repositories/ISellerRepository";
+import { IOrderRepository } from "@/core/domain/interfaces/IOrderInterface";
+import { ISellerRepository } from "@/core/domain/interfaces/ISellerInterface";
 import { OrderMapper } from "@/core/dtos/order/OrderMapper";
 
 export class GetOrderByIdUseCase {
@@ -20,11 +20,11 @@ export class GetOrderByIdUseCase {
     }
 
     if (order.sellerId !== sellerId) {
-      throw new Error(`Order with ID ${orderId} does not belong to seller ${sellerId}.`);
+      throw new Error(
+        `Order with ID ${orderId} does not belong to seller ${sellerId}.`
+      );
     }
 
     return OrderMapper.toResponseDTO(order);
   }
-
-
 }

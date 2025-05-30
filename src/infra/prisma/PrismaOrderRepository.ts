@@ -1,10 +1,10 @@
-import { IOrderRepository } from "@/core/domain/repositories/IOrderRepository";
+import { IOrderInterface } from "@/core/domain/interfaces/IOrderInterface";
 import { OrderStatus } from "@/core/domain/enums/OrderStatus";
 import { Order } from "@/core/domain/entities/Order";
 import { Order as PrismaOrder } from "@prisma/client";
 import prisma from "@/infra/lib/prisma";
 
-export class PrismaOrderRepository implements IOrderRepository {
+export class PrismaOrderRepository implements IOrderInterface {
   async create(order: Order): Promise<Order> {
     const createdOrder = await prisma.order.create({
       data: {

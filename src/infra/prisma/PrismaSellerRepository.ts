@@ -1,4 +1,4 @@
-import { ISellerRepository } from "@/core/domain/repositories/ISellerRepository";
+import { ISellerInterface } from "@/core/domain/interfaces/ISellerInterface";
 import { Seller } from "@/core/domain/entities/Seller";
 import { Product } from "@/core/domain/entities/Product";
 import { Order } from "@/core/domain/entities/Order";
@@ -8,7 +8,7 @@ import { Product as PrismaProduct } from "@prisma/client";
 import { Order as PrismaOrder } from "@prisma/client";
 import prisma from "@/infra/lib/prisma";
 
-export class PrismaSellerRepository implements ISellerRepository {
+export class PrismaSellerRepository implements ISellerInterface {
   async create(seller: Seller): Promise<Seller> {
     const createdSeller = await prisma.seller.create({
       data: {

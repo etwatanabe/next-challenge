@@ -1,9 +1,9 @@
-import { IProductRepository } from "@/core/domain/repositories/IProductRepository";
+import { IProductInterface } from "@/core/domain/interfaces/IProductInterface";
 import { Product } from "@/core/domain/entities/Product";
 import { Product as PrismaProduct } from "@prisma/client";
 import prisma from "@/infra/lib/prisma";
 
-export class PrismaProductRepository implements IProductRepository {
+export class PrismaProductRepository implements IProductInterface {
   async create(product: Product): Promise<Product> {
     const createdProduct = await prisma.product.create({
       data: {
@@ -55,8 +55,7 @@ export class PrismaProductRepository implements IProductRepository {
   async findAll(): Promise<Product[]> {
     const foundProducts = await prisma.product.findMany();
 
-    return foundProducts.map((product) =>
-      this.reconstituteProduct(product));
+    return foundProducts.map((product) => this.reconstituteProduct(product));
   }
 
   async update(product: Product): Promise<Product> {
