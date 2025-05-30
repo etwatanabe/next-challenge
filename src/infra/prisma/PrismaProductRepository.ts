@@ -4,14 +4,14 @@ import { Product as PrismaProduct } from "@prisma/client";
 import prisma from "@/infra/lib/prisma";
 
 export class PrismaProductRepository implements IProductRepository {
-  async create(data: Product): Promise<Product> {
+  async create(product: Product): Promise<Product> {
     const createdProduct = await prisma.product.create({
       data: {
-        name: data.name,
-        description: data.description,
-        price: data.price,
-        imageUrl: data.imageUrl,
-        sellerId: data.sellerId,
+        name: product.name,
+        description: product.description,
+        price: product.price,
+        imageUrl: product.imageUrl,
+        sellerId: product.sellerId,
       },
     });
 
@@ -59,14 +59,14 @@ export class PrismaProductRepository implements IProductRepository {
       this.reconstituteProduct(product));
   }
 
-  async update(data: Product): Promise<Product> {
+  async update(product: Product): Promise<Product> {
     const updatedProduct = await prisma.product.update({
-      where: { id: data.id },
+      where: { id: product.id },
       data: {
-        name: data.name,
-        description: data.description,
-        price: data.price,
-        imageUrl: data.imageUrl,
+        name: product.name,
+        description: product.description,
+        price: product.price,
+        imageUrl: product.imageUrl,
       },
     });
 
