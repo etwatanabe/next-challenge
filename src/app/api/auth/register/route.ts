@@ -1,19 +1,49 @@
-import { CreateSellerUseCase } from "@/core/usecases/seller/RegisterSellerUseCase";
-import { PrismaSellerRepository } from "@/infra/prisma/PrismaSellerRepository";
+import { registerSellerUseCase } from "@/factories/sellerUseCaseFactory";
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 
-const repository = new PrismaSellerRepository();
+const registerSchema = z.object({
+  name: z
+    .string()
+    .min(3, "Nome é obrigatório")
+    .max(100, "Nome deve ter no máximo 100 caracteres"),
 
+  email: z
+    .string()
+    .email("Email inválido")
+    .max(100, "Email deve ter no máximo 100 caracteres"),
+
+  password: z
+    .string()
+    .min(6, "Senha deve ter pelo menos 6 caracteres")
+    .max(100, "Senha deve ter no máximo 100 caracteres")
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/,
+      "Senha deve conter pelo menos uma letra maiúscula, uma minúscula e um número"
+    ),
+});
+
+// POST: Register a new seller
 export async function POST(request: NextRequest) {
   try {
-    const { name, email, password } = await request.json();
-    
-    const useCase = new CreateSellerUseCase(repository);
+    const body = await request.json();
+
+    const result = registerSchema.safeParse(body);
+    if (!result.success) {
+      return NextResponse.json(
+        { error: "Invalid input", details: result.error.errors },
+        { status: 400 }
+      );
+    }
+
+    const validatedData = result.data;
+
+    const useCase = registerSellerUseCase;
 
     const seller = await useCase.execute({
-      name,
-      email,
-      password,
+      name: validatedData.name,
+      email: validatedData.email,
+      password: validatedData.password,
       products: [],
       orders: [],
     });
@@ -29,7 +59,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Error creating seller:", error);
     return NextResponse.json(
-      { error: "Failed to create seller" },
+      { error: "Internal Server Error" },
       { status: 500 }
     );
   }
