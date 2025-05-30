@@ -6,5 +6,5 @@ export type SellerResponseDTO = {
   name: string;
   email: string;
   products: ProductResponseDTO[];
-  orders: OrderResponseDTO[];
+  orders: Omit<OrderResponseDTO, "sellerId">[];
 }
