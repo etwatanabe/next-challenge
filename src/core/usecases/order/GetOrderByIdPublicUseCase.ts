@@ -1,8 +1,8 @@
-import { IOrderRepository } from "@/core/domain/interfaces/IOrderInterface";
+import { IOrderInterface } from "@/core/domain/interfaces/IOrderInterface";
 import { OrderMapper } from "@/core/dtos/order/OrderMapper";
 
 export class GetOrderByIdPublicUseCase {
-  constructor(private readonly orderRepository: IOrderRepository) {}
+  constructor(private readonly orderRepository: IOrderInterface) {}
 
   async execute(id: string) {
     const order = await this.orderRepository.findById(id);

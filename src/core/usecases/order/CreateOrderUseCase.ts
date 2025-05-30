@@ -1,17 +1,17 @@
 import { Order } from "@/core/domain/entities/Order";
-import { OrderItem } from "@/core/domain/entities/OrderItem";
-import { IOrderRepository } from "@/core/domain/interfaces/IOrderInterface";
-import { IProductRepository } from "@/core/domain/interfaces/IProductInterface";
-import { ISellerRepository } from "@/core/domain/interfaces/ISellerInterface";
+import { OrderStatus } from "@/core/domain/enums/OrderStatus";
+import { IOrderInterface } from "@/core/domain/interfaces/IOrderInterface";
+import { IProductInterface } from "@/core/domain/interfaces/IProductInterface";
+import { ISellerInterface } from "@/core/domain/interfaces/ISellerInterface";
 import { CreateOrderDTO } from "@/core/dtos/order/CreateOrderDTO";
 import { OrderMapper } from "@/core/dtos/order/OrderMapper";
 import { OrderResponseDTO } from "@/core/dtos/order/OrderResponseDTO";
 
 export class CreateOrderUseCase {
   constructor(
-    private readonly orderRepository: IOrderRepository,
-    private readonly productRepository: IProductRepository,
-    private readonly sellerRepository: ISellerRepository
+    private readonly orderRepository: IOrderInterface,
+    private readonly productRepository: IProductInterface,
+    private readonly sellerRepository: ISellerInterface
   ) {}
 
   async execute(data: CreateOrderDTO): Promise<OrderResponseDTO> {
@@ -20,32 +20,26 @@ export class CreateOrderUseCase {
       throw new Error(`Seller with ID ${data.sellerId} not found.`);
     }
 
-    if (data.items.length === 0) {
-      throw new Error("Order must have at least one item.");
-    }
-
-    const items = await Promise.all(
-      data.items.map(async (item) => {
-        const product = await this.productRepository.findById(item.productId);
-        if (!product) {
-          throw new Error(`Product with ID ${item.productId} not found.`);
-        }
-
-        return OrderItem.create(product.id, item.quantity, product.price);
-      })
-    );
-
-    if (!items) {
-      throw new Error("Failed to create order items.");
+    const product = await this.productRepository.findById(data.productId);
+    if (!product) {
+      throw new Error(`Product with ID ${data.productId} not found.`);
     }
 
     const orderProps: CreateOrderDTO = {
-      sellerId: seller.id,
-      items: items,
+      sellerId: data.sellerId,
+      productId: data.productId,
+      status: OrderStatus.PENDING,
+      customerName: data.customerName,
+      customerEmail: data.customerEmail,
+      customerPhone: data.customerPhone,
+      customerAddress: data.customerAddress,  
     };
 
     const order = Order.create(orderProps);
-
+    if (!order) {
+      throw new Error("Failed to create order entity.");
+    }
+    
     const createdOrder = await this.orderRepository.create(order);
     if (!createdOrder) {
       throw new Error("Failed to create order.");

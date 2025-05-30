@@ -1,11 +1,11 @@
-import { IOrderRepository } from "@/core/domain/interfaces/IOrderInterface";
-import { ISellerRepository } from "@/core/domain/interfaces/ISellerInterface";
+import { IOrderInterface } from "@/core/domain/interfaces/IOrderInterface";
+import { ISellerInterface } from "@/core/domain/interfaces/ISellerInterface";
 import { OrderMapper } from "@/core/dtos/order/OrderMapper";
 
 export class GetOrderByIdUseCase {
   constructor(
-    private readonly orderRepository: IOrderRepository,
-    private readonly sellerRepository: ISellerRepository
+    private readonly orderRepository: IOrderInterface,
+    private readonly sellerRepository: ISellerInterface
   ) {}
 
   async execute(orderId: string, sellerId: string) {

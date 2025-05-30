@@ -1,4 +1,3 @@
-import { AddItemToOrderUseCase } from "@/core/usecases/order/AddItemToOrderUseCase";
 import { CreateOrderUseCase } from "@/core/usecases/order/CreateOrderUseCase";
 import { GetOrderByIdUseCase } from "@/core/usecases/order/GetOrderByIdUseCase";
 import { ListOrdersUseCase } from "@/core/usecases/order/ListOrdersUseCase";
@@ -18,12 +17,6 @@ export const listOrdersUseCase = new ListOrdersUseCase(
 );
 
 export const createOrderUseCase = new CreateOrderUseCase(
-  orderRepository,
-  productRepository,
-  sellerRepository
-);
-
-export const addItemToOrderUseCase = new AddItemToOrderUseCase(
   orderRepository,
   productRepository,
   sellerRepository

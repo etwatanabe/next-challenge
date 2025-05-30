@@ -1,5 +1,5 @@
 import { OrderStatus } from "@/core/domain/enums/OrderStatus";
-import { IOrderRepository } from "@/core/domain/interfaces/IOrderInterface";
+import { IOrderInterface } from "@/core/domain/interfaces/IOrderInterface";
 import { OrderMapper } from "@/core/dtos/order/OrderMapper";
 import { OrderResponseDTO } from "@/core/dtos/order/OrderResponseDTO";
 
@@ -16,16 +16,14 @@ type CompleteOrderInput = {
 };
 
 export class CompleteOrderUseCase {
-  constructor(private readonly orderRepository: IOrderRepository) {}
+  constructor(private readonly orderRepository: IOrderInterface) {}
 
   async execute({ orderId }: CompleteOrderInput): Promise<OrderResponseDTO> {
     const order = await this.orderRepository.findById(orderId);
-
     if (!order) {
       throw new Error(`Pedido com ID ${orderId} não encontrado`);
     }
 
-    // Atualizar o status do pedido para "concluído"
     order.updateStatus(OrderStatus.COMPLETED);
 
     // Adicionar informações de pagamento ao pedido

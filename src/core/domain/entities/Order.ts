@@ -24,7 +24,7 @@ export class Order {
     this.id = id;
     this.sellerId = props.sellerId;
     this.productId = props.productId;
-    this.status = OrderStatus.PENDING;
+    this.status = props.status ?? OrderStatus.PENDING;
     this.customerName = props.customerName;
     this.customerEmail = props.customerEmail;
     this.customerPhone = props.customerPhone;

@@ -1,6 +1,11 @@
-import { OrderItem } from "@/core/domain/entities/OrderItem";
+import { OrderStatus } from "@/core/domain/enums/OrderStatus";
 
 export type CreateOrderDTO = {
   sellerId: string;
-  items: OrderItem[];
+  productId: string;
+  status: OrderStatus;
+  customerName: string;
+  customerEmail: string;
+  customerPhone: string;
+  customerAddress: string;
 };
