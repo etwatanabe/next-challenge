@@ -23,7 +23,9 @@ export default function OrderDetails({ orderId }: OrderDetailsProps) {
         const data = await response.json();
         setOrder(data);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Falha ao carregar pedido");
+        setError(
+          err instanceof Error ? err.message : "Falha ao carregar pedido"
+        );
       } finally {
         setIsLoading(false);
       }
@@ -35,7 +37,9 @@ export default function OrderDetails({ orderId }: OrderDetailsProps) {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center py-12">
-        <div className="animate-pulse text-[var(--muted)]">Carregando detalhes do pedido...</div>
+        <div className="animate-pulse text-[var(--muted)]">
+          Carregando detalhes do pedido...
+        </div>
       </div>
     );
   }
@@ -48,10 +52,7 @@ export default function OrderDetails({ orderId }: OrderDetailsProps) {
             <p>{error}</p>
           </div>
           <div className="mt-4">
-            <button
-              onClick={() => router.back()}
-              className="btn btn-outline"
-            >
+            <button onClick={() => router.back()} className="btn btn-outline">
               Voltar
             </button>
           </div>
@@ -78,13 +79,23 @@ export default function OrderDetails({ orderId }: OrderDetailsProps) {
       <div className="card-header">
         <h2 className="text-xl font-bold">Detalhes do Pedido</h2>
         <Link href="/dashboard/orders" className="btn btn-ghost btn-sm">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             <path d="M19 12H5M12 19l-7-7 7-7" />
           </svg>
           <span className="ml-1">Voltar</span>
         </Link>
       </div>
-      
+
       <div className="card-content">
         <div className="grid gap-4">
           <div className="grid grid-cols-2 gap-4">
@@ -92,48 +103,64 @@ export default function OrderDetails({ orderId }: OrderDetailsProps) {
               <p className="text-sm text-muted mb-1">Número do Pedido</p>
               <p className="font-medium">{order.id}</p>
             </div>
-            
+
             <div>
               <p className="text-sm text-muted mb-1">Status</p>
-              <span className={`px-2 py-1 text-xs font-medium rounded-full inline-block ${
-                order.status === "COMPLETED" 
-                  ? "bg-[color:rgba(var(--success),0.1)] text-[var(--success)]"
-                  : order.status === "CANCELLED" 
-                    ? "bg-[color:rgba(var(--error),0.1)] text-[var(--error)]" 
+              <span
+                className={`px-2 py-1 text-xs font-medium rounded-full inline-block ${
+                  order.status === "COMPLETED"
+                    ? "bg-[color:rgba(var(--success),0.1)] text-[var(--success)]"
+                    : order.status === "CANCELLED"
+                    ? "bg-[color:rgba(var(--error),0.1)] text-[var(--error)]"
                     : "bg-[color:rgba(var(--warning),0.1)] text-[var(--warning)]"
-              }`}>
-                {order.status === "COMPLETED" 
-                  ? "Concluído" 
-                  : order.status === "CANCELLED" 
-                    ? "Cancelado" 
-                    : "Pendente"}
+                }`}
+              >
+                {order.status === "COMPLETED"
+                  ? "Concluído"
+                  : order.status === "CANCELLED"
+                  ? "Cancelado"
+                  : "Pendente"}
               </span>
             </div>
           </div>
-          
+
           <div>
             <p className="text-sm text-muted mb-2">Valor Total</p>
             <p className="text-lg font-bold">R$ {order.amount.toFixed(2)}</p>
           </div>
-          
+
           <div>
             <p className="text-sm text-muted mb-2">Itens do Pedido</p>
             <div className="border border-[var(--border)] rounded-md overflow-hidden">
               <table className="w-full">
                 <thead className="bg-[color:rgba(var(--foreground),0.02)]">
                   <tr>
-                    <th className="px-4 py-2 text-left text-sm font-medium">Item</th>
-                    <th className="px-4 py-2 text-right text-sm font-medium">Quantidade</th>
-                    <th className="px-4 py-2 text-right text-sm font-medium">Preço</th>
-                    <th className="px-4 py-2 text-right text-sm font-medium">Total</th>
+                    <th className="px-4 py-2 text-left text-sm font-medium">
+                      Item
+                    </th>
+                    <th className="px-4 py-2 text-right text-sm font-medium">
+                      Quantidade
+                    </th>
+                    <th className="px-4 py-2 text-right text-sm font-medium">
+                      Preço
+                    </th>
+                    <th className="px-4 py-2 text-right text-sm font-medium">
+                      Total
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[var(--border)]">
                   {order.items.map((item) => (
                     <tr key={item.productId}>
-                      <td className="px-4 py-3 text-sm">Produto #{item.productId.substring(0, 8)}</td>
-                      <td className="px-4 py-3 text-sm text-right">{item.quantity}</td>
-                      <td className="px-4 py-3 text-sm text-right">R$ {item.priceAtPurchase.toFixed(2)}</td>
+                      <td className="px-4 py-3 text-sm">
+                        Produto #{item.productId.substring(0, 8)}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-right">
+                        {item.quantity}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-right">
+                        R$ {item.priceAtPurchase.toFixed(2)}
+                      </td>
                       <td className="px-4 py-3 text-sm text-right font-medium">
                         R$ {(item.quantity * item.priceAtPurchase).toFixed(2)}
                       </td>
@@ -142,7 +169,10 @@ export default function OrderDetails({ orderId }: OrderDetailsProps) {
                 </tbody>
                 <tfoot className="bg-[color:rgba(var(--foreground),0.02)]">
                   <tr>
-                    <td colSpan={3} className="px-4 py-2 text-sm font-medium text-right">
+                    <td
+                      colSpan={3}
+                      className="px-4 py-2 text-sm font-medium text-right"
+                    >
                       Total
                     </td>
                     <td className="px-4 py-2 text-sm font-bold text-right">
@@ -153,14 +183,6 @@ export default function OrderDetails({ orderId }: OrderDetailsProps) {
               </table>
             </div>
           </div>
-          
-          {order.status === "PENDING" && (
-            <div className="flex justify-end gap-2 mt-4">
-              <button className="btn btn-outline">
-                Atualizar Status
-              </button>
-            </div>
-          )}
         </div>
       </div>
     </div>
