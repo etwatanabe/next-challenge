@@ -1,12 +1,14 @@
 import { ISellerInterface } from "@/core/domain/interfaces/ISellerInterface";
 import { Seller } from "@/core/domain/entities/Seller";
-import bcryptjs from "bcryptjs";
 import { RegisterSellerDTO } from "@/core/dtos/seller/RegisterSellerDTO";
+import { SellerResponseDTO } from "@/core/dtos/seller/SellerResponseDTO";
+import bcryptjs from "bcryptjs";
+import { SellerMapper } from "@/core/dtos/seller/SellerMapper";
 
 export class RegisterSellerUseCase {
   constructor(private readonly sellerRepository: ISellerInterface) {}
 
-  async execute(data: RegisterSellerDTO): Promise<Seller> {
+  async execute(data: RegisterSellerDTO): Promise<SellerResponseDTO> {
     const hashedPassword = await bcryptjs.hash(data.password, 10);
 
     const seller = Seller.create({
@@ -22,6 +24,6 @@ export class RegisterSellerUseCase {
       throw new Error("Failed to create seller");
     }
 
-    return createdSeller;
+    return SellerMapper.toResponseDTO(createdSeller);
   }
 }
