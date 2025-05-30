@@ -1,12 +1,12 @@
-import { IProductRepository } from "@/core/domain/interfaces/IProductInterface";
-import { ISellerRepository } from "@/core/domain/interfaces/ISellerInterface";
+import { IProductInterface } from "@/core/domain/interfaces/IProductInterface";
+import { ISellerInterface } from "@/core/domain/interfaces/ISellerInterface";
 import { ProductMapper } from "@/core/dtos/product/ProductMapper";
 import { ProductResponseDTO } from "@/core/dtos/product/ProductResponseDTO";
 
 export class ListProductBySellerIdUseCase {
   constructor(
-    private readonly productRepository: IProductRepository,
-    private readonly sellerRepository: ISellerRepository
+    private readonly productRepository: IProductInterface,
+    private readonly sellerRepository: ISellerInterface
   ) {}
 
   async execute(sellerId: string): Promise<ProductResponseDTO[]> {

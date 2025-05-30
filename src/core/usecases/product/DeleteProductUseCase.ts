@@ -1,32 +1,31 @@
-import { IProductRepository } from "@/core/domain/interfaces/IProductInterface";
-import { ISellerRepository } from "@/core/domain/interfaces/ISellerInterface";
-import { DeleteProductDTO } from "@/core/dtos/product/DeleteProductDTO";
+import { IProductInterface } from "@/core/domain/interfaces/IProductInterface";
+import { ISellerInterface } from "@/core/domain/interfaces/ISellerInterface";
 
 export class DeleteProductUseCase {
   constructor(
-    private readonly productRepository: IProductRepository,
-    private readonly sellerRepository: ISellerRepository
+    private readonly productRepository: IProductInterface,
+    private readonly sellerRepository: ISellerInterface
   ) {}
 
-  async execute(data: DeleteProductDTO): Promise<void> {
-    const seller = await this.sellerRepository.findById(data.sellerId);
+  async execute(id: string, sellerId: string): Promise<void> {
+    const seller = await this.sellerRepository.findById(sellerId);
     if (!seller) {
-      throw new Error(`Could not find seller with id ${data.sellerId}`);
+      throw new Error(`Seller with id ${sellerId} not found.`);
     }
 
-    if (!seller.products.some((product) => product.id === data.id)) {
+    if (!seller.products.some((product) => product.id === id)) {
       throw new Error(
-        `Seller with id ${data.sellerId} does not own product with id ${data.id}`
+        `Seller with id ${sellerId} does not own product with id ${id}`
       );
     }
 
-    const product = await this.productRepository.findById(data.id);
+    const product = await this.productRepository.findById(id);
     if (!product) {
-      throw new Error(`Could not find product with id ${data.id}`);
+      throw new Error(`Could not find product with id ${id}`);
     }
 
-    seller.removeProduct(data.id);
+    seller.removeProduct(id);
 
-    await this.productRepository.delete(data.id);
+    await this.productRepository.delete(id);
   }
 }

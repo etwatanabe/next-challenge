@@ -1,28 +1,27 @@
-import { IProductRepository } from "@/core/domain/interfaces/IProductInterface";
+import { IProductInterface } from "@/core/domain/interfaces/IProductInterface";
 import { ProductMapper } from "@/core/dtos/product/ProductMapper";
 import { ProductResponseDTO } from "@/core/dtos/product/ProductResponseDTO";
-import { GetProductDTO } from "@/core/dtos/product/GetProductDTO";
-import { ISellerRepository } from "@/core/domain/interfaces/ISellerInterface";
+import { ISellerInterface } from "@/core/domain/interfaces/ISellerInterface";
 
 export class GetProductByIdUseCase {
   constructor(
-    private readonly productRepository: IProductRepository,
-    private readonly sellerRepository: ISellerRepository
+    private readonly productRepository: IProductInterface,
+    private readonly sellerRepository: ISellerInterface
   ) {}
 
-  async execute(data: GetProductDTO): Promise<ProductResponseDTO | null> {
-    const seller = await this.sellerRepository.findById(data.sellerId);
+  async execute(id: string, sellerId: string): Promise<ProductResponseDTO | null> {
+    const seller = await this.sellerRepository.findById(sellerId);
     if (!seller) {
-      throw new Error(`Could not find seller with id ${data.sellerId}`);
+      throw new Error(`Could not find seller with id ${sellerId}`);
     }
 
-    if (!seller.products.some((product) => product.id === data.id)) {
+    if (!seller.products.some((product) => product.id === id)) {
       throw new Error(
-        `Seller with id ${data.sellerId} does not own product with id ${data.id}`
+        `Seller with id ${sellerId} does not own product with id ${id}`
       );
     }
 
-    const product = await this.productRepository.findById(data.id);
+    const product = await this.productRepository.findById(id);
     if (!product) return null;
 
     return ProductMapper.toResponseDTO(product);

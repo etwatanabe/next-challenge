@@ -1,19 +1,19 @@
 import { UpdateProductDTO } from "@/core/dtos/product/UpdateProductDTO";
-import { IProductRepository } from "@/core/domain/interfaces/IProductInterface";
-import { ISellerRepository } from "@/core/domain/interfaces/ISellerInterface";
+import { IProductInterface } from "@/core/domain/interfaces/IProductInterface";
+import { ISellerInterface } from "@/core/domain/interfaces/ISellerInterface";
 import { ProductMapper } from "@/core/dtos/product/ProductMapper";
 import { ProductResponseDTO } from "@/core/dtos/product/ProductResponseDTO";
 
 export class UpdateProductUseCase {
   constructor(
-    private readonly productRepository: IProductRepository,
-    private readonly sellerRepository: ISellerRepository
+    private readonly productRepository: IProductInterface,
+    private readonly sellerRepository: ISellerInterface
   ) {}
 
   async execute(data: UpdateProductDTO): Promise<ProductResponseDTO> {
     const seller = await this.sellerRepository.findById(data.sellerId);
     if (!seller) {
-      throw new Error(`Could not find seller with id ${data.sellerId}`);
+      throw new Error(`Seller with id ${data.sellerId} not found.`);
     }
 
     if (!seller.products.some((product) => product.id === data.id)) {
@@ -24,7 +24,7 @@ export class UpdateProductUseCase {
 
     const product = await this.productRepository.findById(data.id);
     if (!product) {
-      throw new Error(`Could not find product with id ${data.id}`);
+      throw new Error(`Product with id ${data.id} not found.`);
     }
 
     product.update({
