@@ -7,4 +7,5 @@ export type SellerResponseDTO = {
   email: string;
   products: ProductResponseDTO[];
   orders: Omit<OrderResponseDTO, "sellerId">[];
+  stripeAccountId?: string;
 }

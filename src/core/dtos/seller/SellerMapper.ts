@@ -11,6 +11,7 @@ export class SellerMapper {
       email: seller.email,
       products: seller.products.map((product) => ProductMapper.toResponseDTO(product)),
       orders: seller.orders.map((order) => OrderMapper.toResponseDTO(order)),
+      stripeAccountId: seller.stripeAccountId,
     };
   }
 }
