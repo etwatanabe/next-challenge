@@ -65,6 +65,28 @@ export class PrismaSellerRepository implements ISellerInterface {
     );
   }
 
+  async findByProductId(productId: string): Promise<Seller | null> {
+    const foundProduct = await prisma.product.findFirst({
+      where: { id: productId },
+      include: {
+        seller: {
+          include: {
+            products: true,
+            orders: true,
+          },
+        },
+      },
+    });
+
+    if (!foundProduct) return null;
+
+    return this.reconstituteSeller(
+      foundProduct.seller,
+      foundProduct.seller.orders,
+      foundProduct.seller.products
+    );
+  }
+
   async update(seller: Seller): Promise<Seller> {
     const updatedSeller = await prisma.seller.update({
       where: { id: seller.id },
