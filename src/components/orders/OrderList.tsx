@@ -17,7 +17,9 @@ export default function OrderList() {
         const data = await response.json();
         setOrders(data);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Falha ao carregar pedidos");
+        setError(
+          err instanceof Error ? err.message : "Falha ao carregar pedidos"
+        );
       } finally {
         setIsLoading(false);
       }
@@ -29,7 +31,9 @@ export default function OrderList() {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center py-12">
-        <div className="animate-pulse text-[var(--muted)]">Carregando pedidos...</div>
+        <div className="animate-pulse text-[var(--muted)]">
+          Carregando pedidos...
+        </div>
       </div>
     );
   }
@@ -54,8 +58,8 @@ export default function OrderList() {
     <div>
       <div className="space-y-4">
         {orders.map((order) => (
-          <Link 
-            key={order.id} 
+          <Link
+            key={order.id}
             href={`/dashboard/orders/${order.id}`}
             className="card block hover:bg-[color:rgba(var(--foreground),0.01)] transition-colors"
           >
@@ -64,27 +68,27 @@ export default function OrderList() {
                 <h3 className="font-medium">
                   Pedido #{order.id.substring(0, 8)}
                 </h3>
-                <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                  order.status === "COMPLETED" 
-                    ? "bg-[color:rgba(var(--success),0.1)] text-[var(--success)]"
-                    : order.status === "CANCELLED" 
-                      ? "bg-[color:rgba(var(--error),0.1)] text-[var(--error)]" 
+                <span
+                  className={`px-2 py-1 text-xs font-medium rounded-full ${
+                    order.status === "COMPLETED"
+                      ? "bg-[color:rgba(var(--success),0.1)] text-[var(--success)]"
+                      : order.status === "CANCELLED"
+                      ? "bg-[color:rgba(var(--error),0.1)] text-[var(--error)]"
                       : "bg-[color:rgba(var(--warning),0.1)] text-[var(--warning)]"
-                }`}>
-                  {order.status === "COMPLETED" 
-                    ? "Concluído" 
-                    : order.status === "CANCELLED" 
-                      ? "Cancelado" 
-                      : "Pendente"}
+                  }`}
+                >
+                  {order.status === "COMPLETED"
+                    ? "Concluído"
+                    : order.status === "CANCELLED"
+                    ? "Cancelado"
+                    : "Pendente"}
                 </span>
               </div>
-              
+
               <div className="flex justify-between items-center text-sm">
-                <span className="text-muted">
-                  {order.items.length} {order.items.length === 1 ? "item" : "itens"}
-                </span>
+                <span className="text-muted">1 item</span>
                 <span className="font-medium">
-                  R$ {order.amount.toFixed(2)}
+                  R$ {order.product.price.toFixed(2)}
                 </span>
               </div>
             </div>
