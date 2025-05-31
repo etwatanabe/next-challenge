@@ -14,6 +14,10 @@ export const listProductPublicUseCase = new ListProductPublicUseCase(
   productRepository
 );
 
+export const getProductByIdUseCase = new GetProductByIdUseCase(
+  productRepository,
+);
+
 export const listProductBySellerIdUseCase = new ListProductBySellerIdUseCase(
   productRepository,
   sellerRepository
@@ -25,13 +29,7 @@ export const createProductUseCase = new CreateProductUseCase(
 );
 
 export const deleteProductUseCase = new DeleteProductUseCase(
-  productRepository,
-  sellerRepository
-);
-
-export const getProductByIdUseCase = new GetProductByIdUseCase(
-  productRepository,
-  sellerRepository
+  productRepository
 );
 
 export const updateProductUseCase = new UpdateProductUseCase(
