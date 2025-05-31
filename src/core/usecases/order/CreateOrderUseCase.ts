@@ -15,31 +15,31 @@ export class CreateOrderUseCase {
   ) {}
 
   async execute(data: CreateOrderDTO): Promise<OrderResponseDTO> {
-    const seller = await this.sellerRepository.findById(data.sellerId);
-    if (!seller) {
-      throw new Error(`Seller with ID ${data.sellerId} not found.`);
-    }
-
     const product = await this.productRepository.findById(data.productId);
     if (!product) {
       throw new Error(`Product with ID ${data.productId} not found.`);
     }
 
-    const orderProps: CreateOrderDTO = {
-      sellerId: data.sellerId,
-      productId: data.productId,
+    const seller = await this.sellerRepository.findByProductId(product.id);
+    if (!seller) {
+      throw new Error(`Seller for product ID ${product.id} not found.`);
+    }
+
+    const orderProps = {
+      sellerId: seller.id,
       status: OrderStatus.PENDING,
       customerName: data.customerName,
       customerEmail: data.customerEmail,
       customerPhone: data.customerPhone,
-      customerAddress: data.customerAddress,  
+      customerAddress: data.customerAddress,
+      product: product,
     };
 
     const order = Order.create(orderProps);
     if (!order) {
       throw new Error("Failed to create order entity.");
     }
-    
+
     const createdOrder = await this.orderRepository.create(order);
     if (!createdOrder) {
       throw new Error("Failed to create order.");

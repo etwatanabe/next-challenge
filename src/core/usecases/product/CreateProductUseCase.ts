@@ -25,12 +25,13 @@ export class CreateProductUseCase {
       throw new Error(`Product with name ${data.name} already exists.`);
     }
 
-    const productProps: CreateProductDTO = {
+    const productProps = {
       name: data.name,
       description: data.description,
       price: data.price,
       imageUrl: data.imageUrl,
       sellerId: data.sellerId,
+      isActive: data.isActive ?? true,
     };
 
     const product = Product.create(productProps);
