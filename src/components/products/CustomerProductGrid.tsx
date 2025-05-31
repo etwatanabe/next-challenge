@@ -10,7 +10,7 @@ export default function CustomerProductGrid() {
   const [error, setError] = useState("");
   const [filters, setFilters] = useState({
     search: "",
-    sortBy: "newest",
+    sortBy: "price_high",
   });
 
   useEffect(() => {
@@ -42,7 +42,6 @@ export default function CustomerProductGrid() {
     .sort((a, b) => {
       if (filters.sortBy === "price_low") return a.price - b.price;
       if (filters.sortBy === "price_high") return b.price - a.price;
-      // Por padrão, ordena pelos mais recentes (assumindo que os IDs são sequenciais)
       return 0;
     });
 
@@ -112,7 +111,6 @@ export default function CustomerProductGrid() {
             value={filters.sortBy}
             onChange={(e) => setFilters({ ...filters, sortBy: e.target.value })}
           >
-            <option value="newest">Mais recentes</option>
             <option value="price_low">Menor preço</option>
             <option value="price_high">Maior preço</option>
           </select>
