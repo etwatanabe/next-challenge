@@ -1,34 +1,8 @@
 import {
-  getProductByIdUseCase,
   updateProductUseCase,
   deleteProductUseCase,
 } from "@/factories/productUseCaseFactory";
 import { NextRequest, NextResponse } from "next/server";
-
-// GET: Get a product by ID
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  try {
-    const { id } = await params;
-
-    const sellerId = request.headers.get("X-User-Id");
-
-    const product = await getProductByIdUseCase.execute(id, sellerId!);
-    if (!product) {
-      return NextResponse.json({ error: "Product not found" }, { status: 404 });
-    }
-
-    return NextResponse.json(product, { status: 200 });
-  } catch (error) {
-    console.error("Error getting product:", error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
-  }
-}
 
 // PUT: Update a product by ID
 export async function PUT(
