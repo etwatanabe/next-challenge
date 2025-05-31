@@ -12,7 +12,7 @@ export default async function BuyPage({
 }: {
   params: { productId: string };
 }) {
-  const productId = await params.productId;
+  const productId = (await params).productId;
   return (
     <div className="min-h-screen bg-[var(--background)]">
       <header className="bg-[var(--card)] border-b border-[var(--border)]">
