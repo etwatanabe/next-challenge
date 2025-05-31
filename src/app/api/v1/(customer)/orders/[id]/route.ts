@@ -13,7 +13,7 @@ export async function GET(
 
     if (!order) {
       return NextResponse.json(
-        { error: "Order not found" },
+        { error: `Order with ID ${id} not found` },
         { status: 404 }
       );
     }
