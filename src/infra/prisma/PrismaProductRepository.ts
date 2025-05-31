@@ -12,6 +12,7 @@ export class PrismaProductRepository implements IProductInterface {
         price: product.price,
         imageUrl: product.imageUrl,
         sellerId: product.sellerId,
+        isActive: product.isActive ?? true,
       },
     });
 
@@ -48,6 +49,7 @@ export class PrismaProductRepository implements IProductInterface {
         price: product.price.toNumber(),
         imageUrl: product.imageUrl,
         sellerId: product.sellerId,
+        isActive: product.isActive,
       })
     );
   }
@@ -68,6 +70,7 @@ export class PrismaProductRepository implements IProductInterface {
         description: product.description,
         price: product.price,
         imageUrl: product.imageUrl,
+        isActive: product.isActive,
       },
     });
 
@@ -93,6 +96,7 @@ export class PrismaProductRepository implements IProductInterface {
       price: product.price.toNumber(),
       imageUrl: product.imageUrl,
       sellerId: product.sellerId,
+      isActive: product.isActive,
     });
   }
 }

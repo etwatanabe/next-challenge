@@ -18,7 +18,7 @@ export class PrismaSellerRepository implements ISellerInterface {
       },
       include: {
         products: true,
-        orders: true,
+        orders: { include: { product: true } },
       },
     });
 
@@ -34,7 +34,7 @@ export class PrismaSellerRepository implements ISellerInterface {
       where: { id: id },
       include: {
         products: true,
-        orders: true,
+        orders: { include: { product: true } },
       },
     });
 
@@ -52,7 +52,7 @@ export class PrismaSellerRepository implements ISellerInterface {
       where: { email: email },
       include: {
         products: true,
-        orders: true,
+        orders: { include: { product: true } },
       },
     });
 
@@ -72,7 +72,7 @@ export class PrismaSellerRepository implements ISellerInterface {
         seller: {
           include: {
             products: true,
-            orders: true,
+            orders: { include: { product: true } },
           },
         },
       },
@@ -97,7 +97,7 @@ export class PrismaSellerRepository implements ISellerInterface {
       },
       include: {
         products: true,
-        orders: true,
+        orders: { include: { product: true } },
       },
     });
 
@@ -119,24 +119,27 @@ export class PrismaSellerRepository implements ISellerInterface {
       price: product.price.toNumber(),
       imageUrl: product.imageUrl,
       sellerId: product.sellerId,
+      isActive: product.isActive,
     });
   }
 
-  private reconstituteOrder(order: PrismaOrder): Order {
+  private reconstituteOrder(
+    order: PrismaOrder & { product: PrismaProduct }
+  ): Order {
     return Order.reconstitute(order.id, {
       sellerId: order.sellerId,
-      productId: order.productId,
       status: order.status as OrderStatus,
       customerName: order.customerName,
       customerEmail: order.customerEmail,
       customerPhone: order.customerPhone,
       customerAddress: order.customerAddress,
+      product: this.reconstituteProduct(order.product),
     });
   }
 
   private reconstituteSeller(
     seller: PrismaSeller,
-    orders: PrismaOrder[],
+    orders: (PrismaOrder & { product: PrismaProduct })[],
     products: PrismaProduct[]
   ): Seller {
     const domainOrders = orders.map((order) => this.reconstituteOrder(order));

@@ -23,7 +23,7 @@ export class Product {
     this.description = props.description;
     this.price = props.price;
     this.imageUrl = props.imageUrl;
-    this.isActive = props.isActive;
+    this.isActive = props.isActive ?? true;
   }
 
   static create(props: ProductProps): Product {
@@ -43,6 +43,6 @@ export class Product {
     if (props.description) this.description = props.description;
     if (props.price) this.price = props.price;
     if (props.imageUrl) this.imageUrl = props.imageUrl;
-    if (props.isActive !== undefined) this.isActive = props.isActive;
+    if (props.isActive) this.isActive = props.isActive;
   }
 }

@@ -6,12 +6,18 @@ export class OrderMapper {
     return {
       id: order.id,
       sellerId: order.sellerId,
-      productId: order.productId,
       status: order.status,
       customerName: order.customerName,
       customerEmail: order.customerEmail,
       customerPhone: order.customerPhone,
-      customerAddress: order.customerAddress,      
+      customerAddress: order.customerAddress,
+      product: {
+        id: order.product.id,
+        name: order.product.name,
+        description: order.product.description,
+        price: order.product.price,
+        imageUrl: order.product.imageUrl,
+      },
     };
   }
 }
