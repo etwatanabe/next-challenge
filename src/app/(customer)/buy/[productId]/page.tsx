@@ -1,5 +1,5 @@
+import Checkout from "@/components/products/Checkout";
 import { Metadata } from "next";
-import OrderCheckout from "@/components/orders/OrderCheckout";
 import Link from "next/link";
 
 export const metadata: Metadata = {
@@ -7,12 +7,12 @@ export const metadata: Metadata = {
   description: "Complete seu pedido e realize o pagamento",
 };
 
-export default async function BuyOrderPage({
+export default async function BuyPage({
   params,
 }: {
-  params: { orderId: string };
+  params: { productId: string };
 }) {
-  const orderId = await params.orderId;
+  const productId = await params.productId;
   return (
     <div className="min-h-screen bg-[var(--background)]">
       <header className="bg-[var(--card)] border-b border-[var(--border)]">
@@ -28,7 +28,7 @@ export default async function BuyOrderPage({
       </header>
 
       <main className="container mx-auto px-4 py-8">
-        <OrderCheckout orderId={orderId} />
+        <Checkout productId={productId} />
       </main>
     </div>
   );
