@@ -9,6 +9,7 @@ export class ProductMapper {
       description: product.description,
       price: product.price,
       imageUrl: product.imageUrl,
+      isActive: product.isActive ?? true,
     };
   }
 }

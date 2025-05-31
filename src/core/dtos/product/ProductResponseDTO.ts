@@ -4,4 +4,5 @@ export type ProductResponseDTO = {
   description: string;
   price: number;
   imageUrl: string;
+  isActive: boolean;
 };

@@ -4,4 +4,5 @@ export type CreateProductDTO = {
   price: number;
   imageUrl: string;
   sellerId: string;
+  isActive: boolean;
 };

@@ -5,4 +5,5 @@ export type UpdateProductDTO = {
   price?: number;
   imageUrl?: string;
   sellerId: string;
+  isActive?: boolean;
 }
