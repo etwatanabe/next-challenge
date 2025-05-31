@@ -7,6 +7,7 @@ export type SellerProps = {
   password: string;
   products?: Product[];
   orders?: Order[];
+  stripeAccountId?: string;
 };
 
 export class Seller {
@@ -16,6 +17,7 @@ export class Seller {
   public password: string;
   public readonly products: Product[] = [];
   public readonly orders: Order[] = [];
+  public stripeAccountId?: string;
 
   private constructor(id: string, props: SellerProps) {
     this.id = id;
@@ -24,6 +26,7 @@ export class Seller {
     this.password = props.password;
     this.products = props.products ?? [];
     this.orders = props.orders ?? [];
+    this.stripeAccountId = props.stripeAccountId;
   }
 
   static create(props: SellerProps): Seller {
