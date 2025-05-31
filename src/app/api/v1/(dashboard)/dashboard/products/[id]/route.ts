@@ -1,10 +1,8 @@
-import { DeleteProductDTO } from "@/core/dtos/product/DeleteProductDTO";
-import { GetProductDTO } from "@/core/dtos/product/GetProductDTO";
 import { UpdateProductDTO } from "@/core/dtos/product/UpdateProductDTO";
 import {
-  deleteProductUseCase,
   getProductByIdUseCase,
   updateProductUseCase,
+  deleteProductUseCase,
 } from "@/factories/productUseCaseFactory";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -16,14 +14,11 @@ export async function GET(
   try {
     const { id } = await params;
 
+    const sellerId = request.headers.get("X-User-Id");
+
     const useCase = getProductByIdUseCase;
 
-    const data: GetProductDTO = {
-      id: id,
-      sellerId: request.headers.get("X-User-Id")!,
-    };
-
-    const product = await useCase.execute(data);
+    const product = await useCase.execute(id, sellerId!);
     return NextResponse.json(product, { status: 200 });
   } catch (error) {
     console.error("Error getting product:", error);
@@ -41,6 +36,7 @@ export async function PUT(
 ) {
   try {
     const { id } = await params;
+    
 
     const body = await request.json();
 
@@ -74,16 +70,16 @@ export async function DELETE(
   try {
     const { id } = await params;
 
+    const sellerId = request.headers.get("X-User-Id");
+
     const useCase = deleteProductUseCase;
 
-    const data: DeleteProductDTO = {
-      id: id,
-      sellerId: request.headers.get("X-User-Id")!,
-    };
+    await useCase.execute(id, sellerId!);
 
-    await useCase.execute(data);
-
-    return NextResponse.json({ message: "Product deleted successfully" });
+    return NextResponse.json(
+      { message: "Product deleted successfully" },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Error deleting product:", error);
     return NextResponse.json(
