@@ -126,7 +126,9 @@ export default function OrderDetails({ orderId }: OrderDetailsProps) {
 
           <div>
             <p className="text-sm text-muted mb-2">Valor Total</p>
-            <p className="text-lg font-bold">R$ {order.amount.toFixed(2)}</p>
+            <p className="text-lg font-bold">
+              R$ {order.product.price.toFixed(2)}
+            </p>
           </div>
 
           <div>
@@ -144,42 +146,17 @@ export default function OrderDetails({ orderId }: OrderDetailsProps) {
                     <th className="px-4 py-2 text-right text-sm font-medium">
                       Preço
                     </th>
-                    <th className="px-4 py-2 text-right text-sm font-medium">
-                      Total
-                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[var(--border)]">
-                  {order.items.map((item) => (
-                    <tr key={item.productId}>
-                      <td className="px-4 py-3 text-sm">
-                        Produto #{item.productId.substring(0, 8)}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-right">
-                        {item.quantity}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-right">
-                        R$ {item.priceAtPurchase.toFixed(2)}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-right font-medium">
-                        R$ {(item.quantity * item.priceAtPurchase).toFixed(2)}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-                <tfoot className="bg-[color:rgba(var(--foreground),0.02)]">
                   <tr>
-                    <td
-                      colSpan={3}
-                      className="px-4 py-2 text-sm font-medium text-right"
-                    >
-                      Total
-                    </td>
-                    <td className="px-4 py-2 text-sm font-bold text-right">
-                      R$ {order.amount.toFixed(2)}
+                    <td className="px-4 py-3 text-sm">{order.product.name}</td>
+                    <td className="px-4 py-3 text-sm text-right">1</td>
+                    <td className="px-4 py-3 text-sm text-right font-medium">
+                      R$ {order.product.price.toFixed(2)}
                     </td>
                   </tr>
-                </tfoot>
+                </tbody>
               </table>
             </div>
           </div>
