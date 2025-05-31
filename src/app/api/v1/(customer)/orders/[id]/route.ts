@@ -8,12 +8,11 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-
+  
     const order = await getOrderByIdPublicUseCase.execute(id);
-
     if (!order) {
       return NextResponse.json(
-        { error: `Order with ID ${id} not found` },
+        { error: "Order not found" }, 
         { status: 404 }
       );
     }

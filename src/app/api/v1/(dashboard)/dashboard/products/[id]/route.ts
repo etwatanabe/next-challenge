@@ -1,4 +1,3 @@
-import { UpdateProductDTO } from "@/core/dtos/product/UpdateProductDTO";
 import {
   getProductByIdUseCase,
   updateProductUseCase,
@@ -16,9 +15,11 @@ export async function GET(
 
     const sellerId = request.headers.get("X-User-Id");
 
-    const useCase = getProductByIdUseCase;
+    const product = await getProductByIdUseCase.execute(id, sellerId!);
+    if (!product) {
+      return NextResponse.json({ error: "Product not found" }, { status: 404 });
+    }
 
-    const product = await useCase.execute(id, sellerId!);
     return NextResponse.json(product, { status: 200 });
   } catch (error) {
     console.error("Error getting product:", error);
@@ -36,23 +37,24 @@ export async function PUT(
 ) {
   try {
     const { id } = await params;
-    
 
     const body = await request.json();
 
-    const data: UpdateProductDTO = {
-      id,
+    const sellerId = request.headers.get("X-User-Id");
+
+    const product = await updateProductUseCase.execute({
+      id: id,
       name: body.name,
       description: body.description,
       price: body.price,
       imageUrl: body.imageUrl,
-      sellerId: request.headers.get("X-User-Id")!,
-      isActive: body.isActive ?? true,
-    };
+      sellerId: sellerId!,
+      isActive: body.isActive,
+    });
+    if (!product) {
+      return NextResponse.json({ error: "Product not found" }, { status: 404 });
+    }
 
-    const updateUseCase = updateProductUseCase;
-
-    const product = await updateUseCase.execute(data);
     return NextResponse.json(product, { status: 200 });
   } catch (error) {
     console.error("Error updating product:", error);
@@ -73,9 +75,7 @@ export async function DELETE(
 
     const sellerId = request.headers.get("X-User-Id");
 
-    const useCase = deleteProductUseCase;
-
-    await useCase.execute(id, sellerId!);
+    await deleteProductUseCase.execute(id, sellerId!);
 
     return NextResponse.json(
       { message: "Product deleted successfully" },

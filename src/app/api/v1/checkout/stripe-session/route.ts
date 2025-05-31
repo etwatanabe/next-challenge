@@ -21,21 +21,21 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Order not found" }, { status: 404 });
     }
 
-    const seller = await getSellerByProductIdUseCase.execute(order.productId);
+    const seller = await getSellerByProductIdUseCase.execute(order.product.id);
     if (!seller) {
       return NextResponse.json(
-        { error: `Seller for product ID ${order.productId} not found.` },
+        { error: `Seller for product ID ${order.product.id} not found.` },
         { status: 404 }
       );
     }
 
     const product = await getProductByIdUseCase.execute(
-      order.productId,
+      order.product.id,
       seller.id
     );
     if (!product) {
       return NextResponse.json(
-        { error: `Product with ID ${order.productId} not found.` },
+        { error: `Product with ID ${order.product.id} not found.` },
         { status: 404 }
       );
     }
@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
         order.id
       }?success=true`,
       cancel_url: `${request.headers.get("origin")}/buy/${
-        order.productId
+        order.product.id
       }?cancelled=true`,
       metadata: {
         orderId: order.id,

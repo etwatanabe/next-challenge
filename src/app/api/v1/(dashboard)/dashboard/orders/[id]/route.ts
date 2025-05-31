@@ -11,9 +11,13 @@ export async function GET(
 
     const sellerId = request.headers.get("X-User-Id");
 
-    const useCase = getOrderByIdUseCase;
-
-    const order = await useCase.execute(id, sellerId!);
+    const order = await getOrderByIdUseCase.execute(id, sellerId!);
+    if (!order) {
+      return NextResponse.json(
+        { error: "Order not found" },
+        { status: 404 }
+      );
+    }
 
     return NextResponse.json(order, { status: 200 });
   } catch (error) {

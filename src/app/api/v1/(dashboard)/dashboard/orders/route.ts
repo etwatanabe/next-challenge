@@ -6,9 +6,7 @@ export async function GET(request: NextRequest) {
   try {
     const sellerId = request.headers.get("X-User-Id");
 
-    const useCase = listOrdersUseCase;
-
-    const orders = await useCase.execute(sellerId!);
+    const orders = await listOrdersUseCase.execute(sellerId!);
 
     return NextResponse.json(orders, { status: 200 });
   } catch (error) {
