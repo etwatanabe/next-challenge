@@ -1,6 +1,7 @@
 import { IOrderInterface } from "@/core/domain/interfaces/IOrderInterface";
 import { ISellerInterface } from "@/core/domain/interfaces/ISellerInterface";
 import { OrderMapper } from "@/core/dtos/order/OrderMapper";
+import { OrderResponseDTO } from "@/core/dtos/order/OrderResponseDTO";
 
 export class GetOrderByIdUseCase {
   constructor(
@@ -8,22 +9,17 @@ export class GetOrderByIdUseCase {
     private readonly sellerRepository: ISellerInterface
   ) {}
 
-  async execute(orderId: string, sellerId: string) {
+  async execute(orderId: string, sellerId: string): Promise<OrderResponseDTO | null> {
     const seller = await this.sellerRepository.findById(sellerId);
     if (!seller) {
       throw new Error(`Seller with ID ${sellerId} not found.`);
     }
 
     const order = await this.orderRepository.findById(orderId);
-    if (!order) {
-      throw new Error(`Order with ID ${orderId} not found.`);
-    }
+    
+    if (!order) return null;
 
-    if (order.sellerId !== sellerId) {
-      throw new Error(
-        `Order with ID ${orderId} does not belong to seller ${sellerId}.`
-      );
-    }
+    if (order.sellerId !== sellerId) return null;
 
     return OrderMapper.toResponseDTO(order);
   }
