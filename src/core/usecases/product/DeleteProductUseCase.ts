@@ -13,7 +13,7 @@ export class DeleteProductUseCase {
       throw new Error(`Seller with id ${sellerId} not found.`);
     }
 
-    const ownProduct = !seller.products.some((product) => product.id === id);
+    const ownProduct = seller.products.some((product) => product.id === id);
     if (!ownProduct) {
       throw new Error(
         `Seller with id ${sellerId} does not own product with id ${id}`
