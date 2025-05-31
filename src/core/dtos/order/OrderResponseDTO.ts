@@ -1,5 +1,5 @@
 import { OrderStatus } from "@prisma/client";
-import { ProductResponseDTO } from "../product/ProductResponseDTO";
+import { Product } from "@/core/domain/entities/Product";
 
 export type OrderResponseDTO = {
   id: string;
@@ -9,5 +9,5 @@ export type OrderResponseDTO = {
   customerEmail: string;
   customerPhone: string;
   customerAddress: string;
-  product: ProductResponseDTO;
+  product: Product;
 };
