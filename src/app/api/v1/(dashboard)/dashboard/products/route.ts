@@ -37,6 +37,7 @@ export async function POST(request: NextRequest) {
       price: body.price,
       imageUrl: body.imageUrl,
       sellerId: sellerId!,
+      isActive: body.isActive ?? true,
     };
 
     const useCase = createProductUseCase;

@@ -47,6 +47,7 @@ export async function PUT(
       price: body.price,
       imageUrl: body.imageUrl,
       sellerId: request.headers.get("X-User-Id")!,
+      isActive: body.isActive ?? true,
     };
 
     const updateUseCase = updateProductUseCase;
