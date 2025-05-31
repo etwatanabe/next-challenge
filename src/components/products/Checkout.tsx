@@ -2,25 +2,20 @@
 
 import { useState, useEffect } from "react";
 import { loadStripe } from "@stripe/stripe-js";
-import { OrderResponseDTO } from "@/core/dtos/order/OrderResponseDTO";
 import Link from "next/link";
+import Image from "next/image";
+import { ProductResponseDTO } from "@/core/dtos/product/ProductResponseDTO";
 
-// Pré-carregue o Stripe
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || ""
 );
 
-interface OrderCheckoutProps {
-  orderId: string;
-}
-
-export default function OrderCheckout({ orderId }: OrderCheckoutProps) {
-  const [order, setOrder] = useState<OrderResponseDTO | null>(null);
+export default function Checkout({ productId }: { productId: string }) {
+  const [product, setProduct] = useState<ProductResponseDTO | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [error, setError] = useState("");
 
-  // Novo estado para os dados do cliente
   const [customerInfo, setCustomerInfo] = useState({
     name: "",
     email: "",
@@ -34,51 +29,50 @@ export default function OrderCheckout({ orderId }: OrderCheckoutProps) {
   });
 
   useEffect(() => {
-    const fetchOrder = async () => {
+    const fetchProduct = async () => {
       try {
-        const response = await fetch(`/api/v1/orders/${orderId}`);
-        if (!response.ok) throw new Error("Pedido não encontrado");
+        const response = await fetch(`/api/v1/products/${productId}`);
+
+        if (!response.ok) throw new Error("Produto não encontrado");
+
         const data = await response.json();
-        setOrder(data);
+        setProduct(data);
       } catch (err) {
         setError(
-          err instanceof Error ? err.message : "Falha ao carregar pedido"
+          err instanceof Error ? err.message : "Falha ao carregar produto"
         );
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchOrder();
-  }, [orderId]);
+    fetchProduct();
+  }, [productId]);
 
   const handlePayment = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!order) return;
+    if (!product) return;
 
     setIsProcessingPayment(true);
     setError("");
 
     try {
-      // Criar uma sessão de checkout do Stripe incluindo os dados do cliente
+      // Chamar a API de checkout do Stripe com os dados do produto e do cliente
       const stripeResponse = await fetch("/api/v1/checkout/stripe-session", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          orderId: order.id,
-          customerInfo: {
-            name: customerInfo.name,
-            email: customerInfo.email,
-            phone: customerInfo.phone,
-            address: customerInfo.address,
-            zipcode: customerInfo.zipcode,
-            city: customerInfo.city,
-            state: customerInfo.state,
-            bairro: customerInfo.bairro,
-            complemento: customerInfo.complemento,
-          },
+          productId: product.id,
+          customerName: customerInfo.name,
+          customerEmail: customerInfo.email,
+          customerPhone: customerInfo.phone,
+          customerAddress: `${customerInfo.address}, ${customerInfo.bairro}, ${
+            customerInfo.city
+          }-${customerInfo.state}, ${customerInfo.zipcode} ${
+            customerInfo.complemento ? ", " + customerInfo.complemento : ""
+          }`,
         }),
       });
 
@@ -112,13 +106,13 @@ export default function OrderCheckout({ orderId }: OrderCheckoutProps) {
     return (
       <div className="flex justify-center items-center py-12">
         <div className="animate-pulse text-[var(--muted)]">
-          Carregando detalhes do pedido...
+          Carregando detalhes do produto...
         </div>
       </div>
     );
   }
 
-  if (error && !order) {
+  if (error || !product) {
     return (
       <div className="card">
         <div className="card-content">
@@ -135,11 +129,11 @@ export default function OrderCheckout({ orderId }: OrderCheckoutProps) {
     );
   }
 
-  if (!order) {
+  if (!product) {
     return (
       <div className="card">
         <div className="card-content text-center py-8">
-          <p className="text-muted mb-4">Pedido não encontrado</p>
+          <p className="text-muted mb-4">Produto não encontrado</p>
           <Link href="/products" className="btn btn-outline">
             Voltar para loja
           </Link>
@@ -150,52 +144,39 @@ export default function OrderCheckout({ orderId }: OrderCheckoutProps) {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-      {/* Resumo do pedido */}
+      {/* Detalhes do produto */}
       <div className="card">
         <div className="card-header">
-          <h2 className="text-xl font-bold">Resumo do Pedido</h2>
+          <h2 className="text-xl font-bold">Detalhes do Produto</h2>
         </div>
         <div className="card-content">
-          <div className="space-y-4">
-            {order.items.map((item) => (
-              <div
-                key={item.productId}
-                className="flex items-center gap-4 pb-4 border-b border-[var(--border)]"
-              >
-                <div className="w-16 h-16 relative bg-[color:rgba(var(--foreground),0.05)] rounded-md flex items-center justify-center">
-                  <span className="text-2xl font-light text-[var(--muted)]">
-                    {item.quantity}x
-                  </span>
-                </div>
-                <div className="flex-1">
-                  <p className="font-medium">
-                    Produto #{item.productId.substring(0, 8)}
-                  </p>
-                  <p className="text-sm text-muted">
-                    Preço unitário: R$ {item.priceAtPurchase.toFixed(2)}
-                  </p>
-                </div>
-                <div className="text-right">
-                  <p className="font-medium">
-                    R$ {(item.quantity * item.priceAtPurchase).toFixed(2)}
-                  </p>
-                </div>
+          <div className="flex flex-col md:flex-row gap-6 mb-6">
+            {/* Imagem do produto */}
+            {product.imageUrl && (
+              <div className="w-full md:w-1/3 relative h-48 md:h-64 rounded-md overflow-hidden">
+                <Image
+                  src={product.imageUrl}
+                  alt={product.name}
+                  fill
+                  className="object-cover rounded-md"
+                  sizes="(max-width: 768px) 100vw, 300px"
+                />
               </div>
-            ))}
-          </div>
+            )}
 
-          <div className="mt-6 pt-4 border-t border-[var(--border)]">
-            <div className="flex justify-between items-center">
-              <span className="font-medium">Total do Pedido:</span>
-              <span className="text-lg font-bold">
-                R$ {order.amount.toFixed(2)}
-              </span>
+            {/* Informações do produto */}
+            <div className="flex-1">
+              <h1 className="text-xl font-bold mb-2">{product.name}</h1>
+              <p className="text-muted mb-4">{product.description}</p>
+              <p className="text-2xl font-bold text-[var(--primary)]">
+                R$ {product.price.toFixed(2)}
+              </p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Formulário com dados do cliente e pagamento */}
+      {/* Formulário com dados do cliente */}
       <div className="card">
         <div className="card-header">
           <h2 className="text-xl font-bold">Dados para Entrega</h2>
@@ -434,7 +415,7 @@ export default function OrderCheckout({ orderId }: OrderCheckoutProps) {
                       ></rect>
                       <line x1="1" y1="10" x2="23" y2="10"></line>
                     </svg>
-                    Pagar com Stripe
+                    Finalizar Compra
                   </span>
                 )}
               </button>
