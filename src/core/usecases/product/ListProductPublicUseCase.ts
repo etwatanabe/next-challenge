@@ -5,7 +5,7 @@ export class ListProductPublicUseCase {
   constructor(private readonly productRepository: IProductInterface) {}
 
   async execute() {
-    const products = await this.productRepository.findAll();
+    const products = await this.productRepository.findAllActive();
     
     return products.map((product) => ProductMapper.toResponseDTO(product));
   }

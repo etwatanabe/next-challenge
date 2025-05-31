@@ -52,8 +52,10 @@ export class PrismaProductRepository implements IProductInterface {
     );
   }
 
-  async findAll(): Promise<Product[]> {
-    const foundProducts = await prisma.product.findMany();
+  async findAllActive(): Promise<Product[]> {
+    const foundProducts = await prisma.product.findMany({
+      where: { isActive: true },
+    });
 
     return foundProducts.map((product) => this.reconstituteProduct(product));
   }
@@ -70,6 +72,14 @@ export class PrismaProductRepository implements IProductInterface {
     });
 
     return this.reconstituteProduct(updatedProduct);
+  }
+
+  async hasOrders(id: string): Promise<boolean> {
+    const ordersCount = await prisma.order.count({
+      where: { productId: id },
+    });
+
+    return ordersCount > 0;
   }
 
   async delete(id: string): Promise<void> {

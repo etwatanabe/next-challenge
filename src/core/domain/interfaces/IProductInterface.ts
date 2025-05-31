@@ -5,7 +5,8 @@ export interface IProductInterface {
   findById(id: string): Promise<Product | null>;
   findByName(name: string, sellerId: string): Promise<Product | null>;
   findAllBySellerId(sellerId: string): Promise<Product[]>;
-  findAll(): Promise<Product[]>;
+  findAllActive(): Promise<Product[]>;
+  hasOrders(id: string): Promise<boolean>;
   delete(id: string): Promise<void>;
   update(product: Product): Promise<Product>;
 }

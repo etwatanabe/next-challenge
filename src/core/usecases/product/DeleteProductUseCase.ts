@@ -13,7 +13,8 @@ export class DeleteProductUseCase {
       throw new Error(`Seller with id ${sellerId} not found.`);
     }
 
-    if (!seller.products.some((product) => product.id === id)) {
+    const ownProduct = !seller.products.some((product) => product.id === id);
+    if (!ownProduct) {
       throw new Error(
         `Seller with id ${sellerId} does not own product with id ${id}`
       );
@@ -24,8 +25,13 @@ export class DeleteProductUseCase {
       throw new Error(`Could not find product with id ${id}`);
     }
 
-    seller.removeProduct(id);
-
-    await this.productRepository.delete(id);
+    const hasOrders = await this.productRepository.hasOrders(id);
+    if (hasOrders) {
+      product.deactivate();
+      await this.productRepository.update(product);
+    } else {
+      seller.removeProduct(id);
+      await this.productRepository.delete(id);
+    }
   }
 }
