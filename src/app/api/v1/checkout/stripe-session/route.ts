@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getOrderByIdPublicUseCase } from "@/factories/orderUseCaseFactory";
 import stripe from "@/utils/stripe";
+import { getProductByIdUseCase } from "@/factories/productUseCaseFactory";
+import { getSellerByProductIdUseCase } from "@/factories/sellerUseCaseFactory";
 
+// POST: Create a Stripe Checkout session for an order
 export async function POST(request: NextRequest) {
   try {
     const { orderId, customerEmail } = await request.json();
@@ -13,35 +16,55 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Buscar os detalhes do pedido
     const order = await getOrderByIdPublicUseCase.execute(orderId);
     if (!order) {
+      return NextResponse.json({ error: "Order not found" }, { status: 404 });
+    }
+
+    const seller = await getSellerByProductIdUseCase.execute(order.productId);
+    if (!seller) {
       return NextResponse.json(
-        { error: "Order not found" },
+        { error: `Seller for product ID ${order.productId} not found.` },
         { status: 404 }
       );
     }
 
-    // Criar items line para o Stripe
-    const lineItems = order.items.map(item => ({
-      price_data: {
-        currency: 'brl',
-        product_data: {
-          name: `Produto #${item.productId.substring(0, 8)}`,
-          description: `Quantidade: ${item.quantity}`,
-        },
-        unit_amount: Math.round(item.priceAtPurchase * 100), // Stripe usa centavos
-      },
-      quantity: item.quantity,
-    }));
+    const product = await getProductByIdUseCase.execute(
+      order.productId,
+      seller.id
+    );
+    if (!product) {
+      return NextResponse.json(
+        { error: `Product with ID ${order.productId} not found.` },
+        { status: 404 }
+      );
+    }
 
-    // Criar a sessão de checkout
+    const lineItems = [
+      {
+        price_data: {
+          currency: "brl",
+          product_data: {
+            name: product.name,
+            description: product.description,
+            images: product.imageUrl ? [product.imageUrl] : undefined,
+          },
+          unit_amount: Math.round(product.price * 100),
+        },
+        quantity: 1,
+      },
+    ];
+
     const session = await stripe.checkout.sessions.create({
-      customer_email: customerEmail,
+      customer_email: customerEmail || order.customerEmail,
       line_items: lineItems,
-      mode: 'payment',
-      success_url: `${request.headers.get('origin')}/confirmation/${order.id}?success=true`,
-      cancel_url: `${request.headers.get('origin')}/buy/${order.items[0].productId}?cancelled=true`,
+      mode: "payment",
+      success_url: `${request.headers.get("origin")}/confirmation/${
+        order.id
+      }?success=true`,
+      cancel_url: `${request.headers.get("origin")}/buy/${
+        order.productId
+      }?cancelled=true`,
       metadata: {
         orderId: order.id,
       },
