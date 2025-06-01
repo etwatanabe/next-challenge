@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import ProductForm from "./ProductForm";
 import Image from "next/image";
+import Link from "next/link";
 import { ProductResponseDTO } from "@/core/dtos/product/ProductResponseDTO";
 
 export default function ProductList() {
@@ -12,6 +13,7 @@ export default function ProductList() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingProduct, setEditingProduct] =
     useState<ProductResponseDTO | null>(null);
+  const [hasStripeConnected, setHasStripeConnected] = useState(true); // Assume que tem conexão até verificar
 
   const fetchProducts = async () => {
     try {
@@ -26,7 +28,27 @@ export default function ProductList() {
     }
   };
 
+  // Nova função para verificar se o vendedor tem conta Stripe configurada
+  const checkStripeConnection = async () => {
+    try {
+      const response = await fetch("/api/v1/dashboard/stripe/connect");
+      if (response.ok) {
+        const data = await response.json();
+        // Se o status for "complete", o vendedor tem uma conta Stripe válida
+        setHasStripeConnected(data.status === "complete");
+      } else {
+        // Se não conseguir verificar, assume que não tem conexão
+        setHasStripeConnected(false);
+      }
+    } catch (error) {
+      console.error("Erro ao verificar conexão com Stripe:", error);
+      setHasStripeConnected(false);
+    }
+  };
+
   useEffect(() => {
+    // Verificar status do Stripe antes de buscar produtos
+    checkStripeConnection();
     fetchProducts();
   }, []);
 
@@ -52,6 +74,51 @@ export default function ProductList() {
       <div className="flex justify-center items-center py-12">
         <div className="animate-pulse text-[var(--muted)]">
           Carregando produtos...
+        </div>
+      </div>
+    );
+  }
+
+  // Exibir aviso se não tiver conexão com Stripe
+  if (!hasStripeConnected) {
+    return (
+      <div>
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-xl font-bold">Seus Produtos</h2>
+        </div>
+
+        <div className="card p-6 border border-yellow-300 bg-yellow-50">
+          <div className="flex items-start gap-3">
+            <div className="text-yellow-500">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                <line x1="12" y1="9" x2="12" y2="13"></line>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+              </svg>
+            </div>
+            <div>
+              <h3 className="font-bold text-lg mb-2">
+                Configure sua conta de pagamentos primeiro
+              </h3>
+              <p className="text-gray-600 mb-4">
+                Para cadastrar produtos e receber pagamentos pelas vendas, você
+                precisa conectar sua conta bancária através do Stripe.
+              </p>
+              <Link href="/dashboard/payments" className="btn btn-primary">
+                Configurar Pagamentos
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     );
