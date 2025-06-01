@@ -27,16 +27,6 @@ export class PrismaProductRepository implements IProductInterface {
     return this.reconstituteProduct(foundProduct);
   }
 
-  async findByName(name: string, sellerId: string): Promise<Product | null> {
-    const foundProduct = await prisma.product.findFirst({
-      where: { name: name, sellerId: sellerId },
-    });
-
-    if (!foundProduct) return null;
-
-    return this.reconstituteProduct(foundProduct);
-  }
-
   async findAllBySellerId(sellerId: string): Promise<Product[]> {
     const foundProduct = await prisma.product.findMany({
       where: { sellerId: sellerId },

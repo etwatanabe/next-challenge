@@ -17,14 +17,6 @@ export class CreateProductUseCase {
       throw new Error(`Seller with ID ${data.sellerId} not found.`);
     }
 
-    const existingProduct = await this.productRepository.findByName(
-      data.name,
-      data.sellerId
-    );
-    if (existingProduct) {
-      throw new Error(`Product with name ${data.name} already exists.`);
-    }
-
     const productProps = {
       name: data.name,
       description: data.description,
