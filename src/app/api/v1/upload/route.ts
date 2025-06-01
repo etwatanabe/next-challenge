@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { writeFile } from "fs/promises";
+import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 
 export async function POST(request: NextRequest) {
@@ -25,8 +25,12 @@ export async function POST(request: NextRequest) {
 
     const buffer = Buffer.from(await file.arrayBuffer());
 
-    const filePath = path.join(process.cwd(), "public/uploads", fileName);
-    // Ensure the uploads directory exists
+    const uploadsDir = path.join(process.cwd(), "public/uploads");
+
+    // Garante que o diretório existe
+    await mkdir(uploadsDir, { recursive: true });
+
+    const filePath = path.join(uploadsDir, fileName);
 
     await writeFile(filePath, buffer);
 
