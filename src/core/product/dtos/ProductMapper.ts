@@ -4,7 +4,7 @@ import { ProductResponseDTO } from "./ProductResponseDTO";
 export class ProductMapper {
   static toResponseDTO(product: Product): ProductResponseDTO {
     return {
-      id: product.id,
+      id: product.id as string,
       name: product.name,
       description: product.description,
       price: product.price,

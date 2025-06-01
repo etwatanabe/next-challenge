@@ -4,7 +4,7 @@ import { OrderResponseDTO } from "./OrderResponseDTO";
 export class OrderMapper {
   static toResponseDTO(order: Order): OrderResponseDTO {
     return {
-      id: order.id,
+      id: order.id as string,
       sellerId: order.sellerId,
       status: order.status,
       customerName: order.customerName,

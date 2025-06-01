@@ -43,7 +43,8 @@ export class PrismaProductRepository implements IProductInterface {
     });
 
     return foundProduct.map((product) =>
-      Product.reconstitute(product.id, {
+      Product.reconstitute({
+        id: product.id,
         name: product.name,
         description: product.description,
         price: product.price.toNumber(),
@@ -64,7 +65,7 @@ export class PrismaProductRepository implements IProductInterface {
 
   async update(product: Product): Promise<Product> {
     const updatedProduct = await prisma.product.update({
-      where: { id: product.id },
+      where: { id: product.id as string },
       data: {
         name: product.name,
         description: product.description,
@@ -90,7 +91,8 @@ export class PrismaProductRepository implements IProductInterface {
   }
 
   private reconstituteProduct(product: PrismaProduct): Product {
-    return Product.reconstitute(product.id, {
+    return Product.reconstitute({
+      id: product.id,
       name: product.name,
       description: product.description,
       price: product.price.toNumber(),

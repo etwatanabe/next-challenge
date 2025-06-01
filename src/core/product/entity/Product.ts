@@ -1,4 +1,5 @@
 export type ProductProps = {
+  id?: string;
   sellerId: string;
   name: string;
   description: string;
@@ -8,7 +9,7 @@ export type ProductProps = {
 };
 
 export class Product {
-  public readonly id: string;
+  public id: string | null;
   public readonly sellerId: string;
   public name: string;
   public description: string;
@@ -16,8 +17,8 @@ export class Product {
   public imageUrl: string;
   public isActive?: boolean;
 
-  private constructor(id: string, props: ProductProps) {
-    this.id = id;
+  private constructor(props: ProductProps) {
+    this.id = props.id ?? null;
     this.sellerId = props.sellerId;
     this.name = props.name;
     this.description = props.description;
@@ -27,11 +28,11 @@ export class Product {
   }
 
   static create(props: ProductProps): Product {
-    return new Product("", props);
+    return new Product(props);
   }
 
-  static reconstitute(id: string, props: ProductProps): Product {
-    return new Product(id, props);
+  static reconstitute(props: ProductProps): Product {
+    return new Product(props);
   }
 
   deactivate(): void {

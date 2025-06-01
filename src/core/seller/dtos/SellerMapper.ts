@@ -6,7 +6,7 @@ import { OrderMapper } from "../../order/dtos/OrderMapper";
 export class SellerMapper {
   static toResponseDTO(seller: Seller): SellerResponseDTO {
     return {
-      id: seller.id,
+      id: seller.id as string,
       name: seller.name,
       email: seller.email,
       products: seller.products.map((product) =>

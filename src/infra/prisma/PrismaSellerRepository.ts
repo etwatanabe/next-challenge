@@ -89,8 +89,10 @@ export class PrismaSellerRepository implements ISellerInterface {
   }
 
   async update(seller: Seller): Promise<Seller> {
+
+
     const updatedSeller = await prisma.seller.update({
-      where: { id: seller.id },
+      where: { id: seller.id as string},
       data: {
         name: seller.name,
         email: seller.email,
@@ -115,7 +117,8 @@ export class PrismaSellerRepository implements ISellerInterface {
   }
 
   private reconstituteProduct(product: PrismaProduct): Product {
-    return Product.reconstitute(product.id, {
+    return Product.reconstitute({
+      id: product.id,
       name: product.name,
       description: product.description,
       price: product.price.toNumber(),
@@ -128,7 +131,8 @@ export class PrismaSellerRepository implements ISellerInterface {
   private reconstituteOrder(
     order: PrismaOrder & { product: PrismaProduct }
   ): Order {
-    return Order.reconstitute(order.id, {
+    return Order.reconstitute({
+      id: order.id,
       sellerId: order.sellerId,
       status: order.status as OrderStatus,
       customerName: order.customerName,
@@ -149,7 +153,8 @@ export class PrismaSellerRepository implements ISellerInterface {
       this.reconstituteProduct(product)
     );
 
-    return Seller.reconstitute(seller.id, {
+    return Seller.reconstitute({
+      id: seller.id,
       name: seller.name,
       email: seller.email,
       password: seller.password,

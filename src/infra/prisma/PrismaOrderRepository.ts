@@ -11,7 +11,7 @@ export class PrismaOrderRepository implements IOrderInterface {
     const createdOrder = await prisma.order.create({
       data: {
         sellerId: order.sellerId,
-        productId: order.product.id,
+        productId: order.product.id as string,
         status: order.status,
         customerEmail: order.customerEmail,
         customerPhone: order.customerPhone,
@@ -52,7 +52,7 @@ export class PrismaOrderRepository implements IOrderInterface {
 
   async update(order: Order): Promise<Order> {
     const updatedOrder = await prisma.order.update({
-      where: { id: order.id },
+      where: { id: order.id as string},
       data: {
         status: order.status,
         customerName: order.customerName,
@@ -73,7 +73,8 @@ export class PrismaOrderRepository implements IOrderInterface {
   }
 
   private reconstituteProduct(product: PrismaProduct): Product {
-    return Product.reconstitute(product.id, {
+    return Product.reconstitute({
+      id: product.id,
       name: product.name,
       description: product.description,
       price: product.price.toNumber(),
@@ -86,7 +87,8 @@ export class PrismaOrderRepository implements IOrderInterface {
   private reconstituteOrder(
     order: PrismaOrder & { product: PrismaProduct }
   ): Order {
-    return Order.reconstitute(order.id, {
+    return Order.reconstitute({
+      id: order.id,
       sellerId: order.sellerId,
       status: order.status as OrderStatus,
       customerName: order.customerName,

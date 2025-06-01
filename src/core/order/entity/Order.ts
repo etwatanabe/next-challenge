@@ -1,7 +1,8 @@
 import { OrderStatus } from "@/core/order/enums/OrderStatus";
-import { Product } from "../../product/entity/Product";
+import { Product } from "@/core/product/entity/Product";
 
 export type OrderProps = {
+  id?: string;
   sellerId: string;
   status: OrderStatus;
   customerName: string;
@@ -12,8 +13,8 @@ export type OrderProps = {
 };
 
 export class Order {
-  public readonly id: string;
-  public readonly sellerId: string;
+  public id: string | null;
+  public sellerId: string;
   public status: OrderStatus;
   public customerName: string;
   public customerEmail: string;
@@ -21,8 +22,8 @@ export class Order {
   public customerAddress: string;
   public product: Product;
 
-  private constructor(id: string, props: OrderProps) {
-    this.id = id;
+  private constructor(props: OrderProps) {
+    this.id = props.id ?? null;
     this.sellerId = props.sellerId;
     this.status = props.status ?? OrderStatus.PENDING;
     this.customerName = props.customerName;
@@ -33,11 +34,11 @@ export class Order {
   }
 
   static create(props: OrderProps): Order {
-    return new Order("", props);
+    return new Order(props);
   }
 
-  static reconstitute(id: string, props: OrderProps): Order {
-    return new Order(id, props);
+  static reconstitute(props: OrderProps): Order {
+    return new Order(props);
   }
 
   updateStatus(status: OrderStatus): void {

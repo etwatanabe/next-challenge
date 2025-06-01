@@ -2,6 +2,7 @@ import { Product } from "@/core/product/entity/Product";
 import { Order } from "@/core/order/entity/Order";
 
 export type SellerProps = {
+  id?: string;
   name: string;
   email: string;
   password: string;
@@ -11,7 +12,7 @@ export type SellerProps = {
 };
 
 export class Seller {
-  public readonly id: string;
+  public id: string | null;
   public name: string;
   public email: string;
   public password: string;
@@ -19,8 +20,8 @@ export class Seller {
   public readonly orders: Order[] = [];
   public stripeAccountId?: string;
 
-  private constructor(id: string, props: SellerProps) {
-    this.id = id;
+  private constructor(props: SellerProps) {
+    this.id = props.id ?? null;
     this.name = props.name;
     this.email = props.email;
     this.password = props.password;
@@ -30,11 +31,11 @@ export class Seller {
   }
 
   static create(props: SellerProps): Seller {
-    return new Seller("", props);
+    return new Seller(props);
   }
 
-  static reconstitute(id: string, props: SellerProps): Seller {
-    return new Seller(id, props);
+  static reconstitute(props: SellerProps): Seller {
+    return new Seller(props);
   }
 
   public update(
