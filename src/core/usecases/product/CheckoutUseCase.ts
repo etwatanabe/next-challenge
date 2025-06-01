@@ -83,11 +83,11 @@ export class CheckoutUseCase {
         },
       ],
       mode: "payment",
-      success_url: `${origin}/confirmation/${order.id}?success=true`,
+      success_url: `${origin}/confirmation/${createdOrder.id}?success=true`,
       cancel_url: `${origin}/buy/${productId}?cancelled=true`,
-      metadata: { orderId: order.id },
+      metadata: { orderId: createdOrder.id, sellerId: seller.id },
       payment_intent_data: {
-        application_fee_amount: Math.round(product.price * 10),
+        application_fee_amount: Math.round(product.price * 10), // 10%
         transfer_data: {
           destination: seller.stripeAccountId,
         },
