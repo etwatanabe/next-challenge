@@ -4,12 +4,12 @@ import { NextRequest, NextResponse } from "next/server";
 // GET: Get order status by order ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const orderId = params.id;
+    const { id } = await params;
 
-    const orderStatus = await getOrderStatusUseCase.execute(orderId);
+    const orderStatus = await getOrderStatusUseCase.execute(id);
     if (!orderStatus) {
       return NextResponse.json({ error: "Order not found" }, { status: 404 });
     }

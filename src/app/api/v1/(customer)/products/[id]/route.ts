@@ -4,7 +4,7 @@ import { getProductByIdUseCase } from "@/usecases/product/factory/productUseCase
 // GET: Get product by ID for public use
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params;
