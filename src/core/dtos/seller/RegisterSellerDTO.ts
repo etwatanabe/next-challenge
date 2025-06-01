@@ -7,5 +7,5 @@ export type RegisterSellerDTO = {
   password: string;
   products: Product[];
   orders: Order[];
-  
+  createStripeAccount?: boolean;
 };
