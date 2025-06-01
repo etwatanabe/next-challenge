@@ -37,6 +37,13 @@ export class Seller {
     return new Seller(id, props);
   }
 
+  public update(props: Partial<Omit<SellerProps, "products" | "orders">>): void {
+    this.name = props.name ?? this.name;
+    this.email = props.email ?? this.email;
+    this.password = props.password ?? this.password;
+    this.stripeAccountId = props.stripeAccountId ?? this.stripeAccountId;
+  }
+
   public addOrder(order: Order): void {
     this.orders.push(order);
   }
