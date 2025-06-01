@@ -5,6 +5,7 @@ import { PrismaOrderRepository } from "@/infra/prisma/PrismaOrderRepository";
 import { PrismaProductRepository } from "@/infra/prisma/PrismaProductRepository";
 import { PrismaSellerRepository } from "@/infra/prisma/PrismaSellerRepository";
 import { UpdateOrderStatusUseCase } from "@/core/usecases/order/UpdateOrderStatusUseCase";
+import { GetOrderStatusUseCase } from "@/core/usecases/order/GetOrderStatusUseCase";
 
 const orderRepository = new PrismaOrderRepository();
 const productRepository = new PrismaProductRepository();
@@ -26,4 +27,10 @@ export const getOrderByIdUseCase = new GetOrderByIdUseCase(
   sellerRepository
 );
 
-export const updateOrderStatusUseCase = new UpdateOrderStatusUseCase(orderRepository);
+export const updateOrderStatusUseCase = new UpdateOrderStatusUseCase(
+  orderRepository
+);
+
+export const getOrderStatusUseCase = new GetOrderStatusUseCase(
+  orderRepository
+);
