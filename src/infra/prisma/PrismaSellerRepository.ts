@@ -15,6 +15,7 @@ export class PrismaSellerRepository implements ISellerInterface {
         name: seller.name,
         email: seller.email,
         password: seller.password,
+        stripeAccountId: seller.stripeAccountId,
       },
       include: {
         products: true,
@@ -94,6 +95,7 @@ export class PrismaSellerRepository implements ISellerInterface {
         name: seller.name,
         email: seller.email,
         password: seller.password,
+        stripeAccountId: seller.stripeAccountId,
       },
       include: {
         products: true,
@@ -153,6 +155,7 @@ export class PrismaSellerRepository implements ISellerInterface {
       password: seller.password,
       products: domainProducts,
       orders: domainOrders,
+      stripeAccountId: seller.stripeAccountId,
     });
   }
 }
