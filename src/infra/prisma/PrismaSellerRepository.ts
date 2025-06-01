@@ -89,10 +89,8 @@ export class PrismaSellerRepository implements ISellerInterface {
   }
 
   async update(seller: Seller): Promise<Seller> {
-
-
     const updatedSeller = await prisma.seller.update({
-      where: { id: seller.id as string},
+      where: { id: seller.id as string },
       data: {
         name: seller.name,
         email: seller.email,
