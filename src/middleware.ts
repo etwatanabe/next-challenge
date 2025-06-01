@@ -12,7 +12,11 @@ export async function middleware(request: NextRequest) {
   });
 
   // Rotas que requerem autenticação
-  const protectedRoutes = ["/dashboard/products", "/dashboard/orders"];
+  const protectedRoutes = [
+    "/dashboard/products",
+    "/dashboard/orders",
+    "/dashboard/stripe",
+  ];
   const isProtectedRoute = protectedRoutes.some(
     (route) => pathname.startsWith(route) || pathname === route
   );
@@ -37,6 +41,7 @@ export async function middleware(request: NextRequest) {
   const protectedApiRoutes = [
     "/api/v1/dashboard/orders",
     "/api/v1/dashboard/products",
+    "/api/v1/dashboard/stripe",
   ];
   const isProtectedApiRoute = protectedApiRoutes.some((route) =>
     pathname.startsWith(route)
