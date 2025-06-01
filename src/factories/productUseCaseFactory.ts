@@ -4,18 +4,21 @@ import { CreateProductUseCase } from "@/core/usecases/product/CreateProductUseCa
 import { DeleteProductUseCase } from "@/core/usecases/product/DeleteProductUseCase";
 import { GetProductByIdUseCase } from "@/core/usecases/product/GetProductByIdUseCase";
 import { UpdateProductUseCase } from "@/core/usecases/product/UpdateProductUseCase";
+import { CheckoutUseCase } from "@/core/usecases/product/CheckoutUseCase";
 import { PrismaProductRepository } from "@/infra/prisma/PrismaProductRepository";
 import { PrismaSellerRepository } from "@/infra/prisma/PrismaSellerRepository";
+import { PrismaOrderRepository } from "@/infra/prisma/PrismaOrderRepository";
 
 const productRepository = new PrismaProductRepository();
 const sellerRepository = new PrismaSellerRepository();
+const orderRepository = new PrismaOrderRepository();
 
 export const listProductPublicUseCase = new ListProductPublicUseCase(
   productRepository
 );
 
 export const getProductByIdUseCase = new GetProductByIdUseCase(
-  productRepository,
+  productRepository
 );
 
 export const listProductBySellerIdUseCase = new ListProductBySellerIdUseCase(
@@ -29,10 +32,17 @@ export const createProductUseCase = new CreateProductUseCase(
 );
 
 export const deleteProductUseCase = new DeleteProductUseCase(
-  productRepository
+  productRepository,
+  sellerRepository
 );
 
 export const updateProductUseCase = new UpdateProductUseCase(
   productRepository,
+  sellerRepository
+);
+
+export const checkoutUseCase = new CheckoutUseCase(
+  productRepository,
+  orderRepository,
   sellerRepository
 );
