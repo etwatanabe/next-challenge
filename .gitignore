@@ -41,3 +41,7 @@ yarn-error.log*
 next-env.d.ts
 
 /src/generated/prisma
+
+# Ignora todos os arquivos em public/uploads, exceto o .gitkeep
+public/uploads/*
+!public/uploads/.gitkeep
