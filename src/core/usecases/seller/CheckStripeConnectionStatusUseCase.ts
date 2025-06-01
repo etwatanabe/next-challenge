@@ -4,14 +4,16 @@ import stripe from "@/utils/stripe";
 export class CheckStripeConnectionStatusUseCase {
   constructor(private readonly sellerRepository: ISellerInterface) {}
 
-  async execute(sellerId: string): Promise<{ status: string; accountId: string }> {
+  async execute(
+    sellerId: string
+  ): Promise<{ status: string; accountId: string }> {
     const seller = await this.sellerRepository.findById(sellerId);
     if (!seller) {
       throw new Error("Seller not found");
     }
 
     if (!seller.stripeAccountId) {
-      throw new Error("Seller does not have a Stripe account connected");
+      return { status: "not_connected", accountId: "" };
     }
 
     const account = await stripe.accounts.retrieve(seller.stripeAccountId);
