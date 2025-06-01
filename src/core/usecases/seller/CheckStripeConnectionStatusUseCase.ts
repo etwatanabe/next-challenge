@@ -21,8 +21,16 @@ export class CheckStripeConnectionStatusUseCase {
       throw new Error("Stripe account not found");
     }
 
+    if (!account.details_submitted) {
+      return { status: "incomplete", accountId: seller.stripeAccountId };
+    }
+
+    if (account.capabilities?.transfers !== "active") {
+      return { status: "pending", accountId: seller.stripeAccountId };
+    }
+      
     return {
-      status: account.details_submitted ? "complete" : "pending",
+      status: "complete",
       accountId: seller.stripeAccountId,
     };
   }
