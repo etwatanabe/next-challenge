@@ -12,14 +12,13 @@ export default function OrderConfirmation({ id }: { id: string }) {
     async function fetchOrderData() {
       try {
         const response = await fetch(`/api/v1/orders/${id}`);
-        if (!response.ok) {
+        
+        if (!response.ok)
           throw new Error("Pedido não existe ou não foi encontrado");
-        }
-
+        
         const status = await response.json();
 
-        console.log("Order status:", status);
-        if (!(status !== "COMPLETED")) {
+        if (status !== "COMPLETED") {
           redirect(`/products?error=invalid-order`);
         }
       } catch (err) {
