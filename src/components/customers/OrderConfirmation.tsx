@@ -13,7 +13,7 @@ export default function OrderConfirmation({ id }: { id: string }) {
       try {
         const response = await fetch(`/api/v1/orders/${id}`);
         if (!response.ok) {
-          throw new Error("Failed to fetch order data");
+          throw new Error("Pedido não existe ou não foi encontrado");
         }
 
         const status = await response.json();
