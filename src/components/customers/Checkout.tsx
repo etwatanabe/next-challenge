@@ -58,7 +58,7 @@ export default function Checkout({ productId }: { productId: string }) {
 
     try {
       // Chamar a API de checkout do Stripe com os dados do produto e do cliente
-      const stripeResponse = await fetch("/api/v1/checkout/stripe-session", {
+      const stripeResponse = await fetch("/api/v1/stripe/checkout", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

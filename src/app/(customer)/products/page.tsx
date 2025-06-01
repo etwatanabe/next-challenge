@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import CustomerProductGrid from "@/components/products/CustomerProductGrid";
+import CustomerProductGrid from "@/components/customers/CustomerProductGrid";
 
 export const metadata: Metadata = {
   title: "Produtos | Loja Online",

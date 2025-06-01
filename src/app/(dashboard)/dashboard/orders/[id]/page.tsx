@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import OrderDetails from "@/components/orders/OrderDetails";
+import OrderDetails from "@/components/dashboard/orders/OrderDetails";
 
 export const metadata: Metadata = {
   title: "Detalhes do Pedido | Seller Dashboard",

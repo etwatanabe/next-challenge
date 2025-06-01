@@ -1,4 +1,4 @@
-import Checkout from "@/components/products/Checkout";
+import Checkout from "@/components/customers/Checkout";
 import { Metadata } from "next";
 import Link from "next/link";
 
