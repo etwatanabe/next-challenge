@@ -7,12 +7,11 @@ export const metadata: Metadata = {
   description: "Complete seu pedido e realize o pagamento",
 };
 
-export default async function BuyPage({
-  params,
-}: {
-  params: { productId: string };
-}) {
-  const productId = (await params).productId;
+type Params = Promise<{ productId: string }>;
+
+export default async function BuyPage({params}: { params: Params }) {
+  const { productId} = await params;
+  
   return (
     <div className="min-h-screen bg-[var(--background)]">
       <header className="bg-[var(--card)] border-b border-[var(--border)]">

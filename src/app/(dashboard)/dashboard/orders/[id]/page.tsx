@@ -6,14 +6,14 @@ export const metadata: Metadata = {
   description: "Visualize os detalhes do pedido",
 };
 
-export default function OrderDetailPage({
-  params,
-}: {
-  params: { id: string };
-}) {
+type Params = Promise<{ id: string }>;
+
+export default async function OrderDetailPage({ params }: { params: Params }) {
+  const { id } = await params;
+
   return (
     <div className="w-full">
-      <OrderDetails orderId={params.id} />
+      <OrderDetails orderId={id} />
     </div>
   );
 }

@@ -6,10 +6,9 @@ export const metadata: Metadata = {
   description: "Seu pedido foi confirmado com sucesso",
 };
 
-export default function OrderConfirmationPage({
-  params,
-}: {
-  params: { id: string };
-}) {
-  return <OrderConfirmation id={params.id} />;
+type Params = Promise<{ id: string }>;
+
+export default async function OrderConfirmationPage({ params }: { params: Params }) {
+  const { id } = await params;
+  return <OrderConfirmation id={id} />;
 }
