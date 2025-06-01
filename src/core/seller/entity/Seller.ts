@@ -30,7 +30,7 @@ export class Seller {
   }
 
   static create(props: SellerProps): Seller {
-    return new Seller(crypto.randomUUID(), props);
+    return new Seller("", props);
   }
 
   static reconstitute(id: string, props: SellerProps): Seller {

@@ -33,7 +33,7 @@ export class Order {
   }
 
   static create(props: OrderProps): Order {
-    return new Order(crypto.randomUUID(), props);
+    return new Order("", props);
   }
 
   static reconstitute(id: string, props: OrderProps): Order {

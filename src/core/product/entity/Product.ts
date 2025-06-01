@@ -27,7 +27,7 @@ export class Product {
   }
 
   static create(props: ProductProps): Product {
-    return new Product(crypto.randomUUID(), props);
+    return new Product("", props);
   }
 
   static reconstitute(id: string, props: ProductProps): Product {
