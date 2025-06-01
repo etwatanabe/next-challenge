@@ -51,7 +51,7 @@ export const authOptions: NextAuthOptions = {
         try {
           // Buscar vendedor pelo email
           const seller = await sellerRepository.findByEmail(credentials.email);
-          if (!seller) return null;
+          if (!seller || !seller.id) return null;
 
           // Verificar senha
           const passwordMatch = await compare(credentials.password, seller.password);
