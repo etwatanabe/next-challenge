@@ -1,52 +1,85 @@
 import { NextRequest, NextResponse } from "next/server";
-import { updateOrderStatusUseCase } from "@/factories/orderUseCaseFactory";
-import { OrderStatus } from "@/core/domain/enums/OrderStatus";
 import { headers } from "next/headers";
 import stripe from "@/utils/stripe";
+import { updateOrderStatusUseCase } from "@/factories/orderUseCaseFactory";
+import { OrderStatus } from "@/core/domain/enums/OrderStatus";
 
-// POST: Handle Stripe webhook events
+// POST: Webhook handler for Stripe events
 export async function POST(request: NextRequest) {
-  const body = await request.text();
-  const head = await headers();
-  const signature = head.get("stripe-signature") as string;
-  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET || "";
-
-  let event;
-
   try {
-    event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
-  } catch (err) {
-    console.error(err instanceof Error ? err.message : "Unknown error");
-    return NextResponse.json({ error: "Webhook error" }, { status: 400 });
-  }
+    const body = await request.text();
+    const head = await headers();
 
-  if (event.type === "checkout.session.completed") {
-    const session = event.data.object;
-    if (!session.metadata || !session.metadata.orderId) {
+    const signature = head.get("stripe-signature");
+    if (!signature) {
       return NextResponse.json(
-        { error: "Missing orderId in session metadata" },
+        { error: "Webhook signature required" },
         { status: 400 }
       );
     }
-    
-    const orderId = session.metadata.orderId;
 
-    try {
-      const updated = await updateOrderStatusUseCase.execute(orderId, OrderStatus.COMPLETED);
-      if (updated.status !== OrderStatus.COMPLETED) {
-        return NextResponse.json(
-          { error: "Order status update failed" },
-          { status: 500 }
-        );
-      }
-    } catch (error) {
-      console.error("Error processing confirmed payment:", error);
+    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+    if (!webhookSecret) {
       return NextResponse.json(
-        { error: "Error processing payment" },
+        { error: "Webhook secret not configured" },
         { status: 500 }
       );
     }
-  }
 
-  return NextResponse.json({ received: true });
+    const event = stripe.webhooks.constructEvent(
+      body,
+      signature,
+      webhookSecret
+    );
+
+    switch (event.type) {
+      case "checkout.session.completed":
+        console.log("Processing checkout.session.completed");
+        const session = event.data.object;
+        console.log("Session ID:", session.id);
+        console.log("Metadata:", session.metadata);
+
+        if (session.metadata && session.metadata.orderId) {
+          try {
+            const updated = await updateOrderStatusUseCase.execute(
+              session.metadata.orderId,
+              OrderStatus.COMPLETED
+            );
+            console.log(
+              `Order ${session.metadata.orderId} updated to COMPLETED:`,
+              updated
+            );
+          } catch (error) {
+            console.error(
+              `Error updating order ${session.metadata.orderId}:`,
+              error
+            );
+          }
+        }
+        break;
+
+      case "payment_intent.succeeded":
+        console.log("Processing payment_intent.succeeded");
+        const paymentIntent = event.data.object;
+        console.log("Payment Intent ID:", paymentIntent.id);
+        break;
+
+      case "transfer.created":
+        console.log("Processing transfer.created");
+        const transfer = event.data.object;
+        console.log("Transfer ID:", transfer.id);
+        break;
+
+      default:
+        console.log(`Unhandled event: ${event.type}`);
+    }
+
+    return NextResponse.json({ received: true });
+  } catch (err) {
+    console.error("Webhook error:", err);
+    return NextResponse.json(
+      { error: err instanceof Error ? err.message : "Unknown error" },
+      { status: 400 }
+    );
+  }
 }
