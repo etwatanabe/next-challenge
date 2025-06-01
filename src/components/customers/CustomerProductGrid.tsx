@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ProductResponseDTO } from "@/core/dtos/product/ProductResponseDTO";
+import { ProductResponseDTO } from "@/core/product/dtos/ProductResponseDTO";
 import ProductCard from "./ProductCard";
 
 export default function CustomerProductGrid() {

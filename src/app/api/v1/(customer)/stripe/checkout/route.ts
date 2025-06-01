@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { checkoutUseCase } from "@/factories/productUseCaseFactory";
+import { checkoutUseCase } from "@/usecases/product/factory/productUseCaseFactory";
 
 // POST: Create a Stripe Checkout session for a product
 export async function POST(request: NextRequest) {

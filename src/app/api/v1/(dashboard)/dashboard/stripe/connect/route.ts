@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import {
   checkStripeConnectionStatusUseCase,
   connectStripeAccountUseCase,
-} from "@/factories/sellerUseCaseFactory";
+} from "@/usecases/seller/factory/sellerUseCaseFactory";
 
 // POST: Create a Stripe Connect account link for a seller
 export async function POST(request: NextRequest) {

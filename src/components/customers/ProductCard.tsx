@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ProductResponseDTO } from "@/core/dtos/product/ProductResponseDTO";
+import { ProductResponseDTO } from "@/core/product/dtos/ProductResponseDTO";
 import { useState } from "react";
 
 interface ProductCardProps {

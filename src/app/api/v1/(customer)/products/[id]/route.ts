@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getProductByIdUseCase } from "@/factories/productUseCaseFactory";
+import { getProductByIdUseCase } from "@/usecases/product/factory/productUseCaseFactory";
 
 // GET: Get product by ID for public use
 export async function GET(
@@ -11,10 +11,7 @@ export async function GET(
 
     const product = await getProductByIdUseCase.execute(id);
     if (!product) {
-      return NextResponse.json(
-        { error: "Product not found" }, 
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
 
     return NextResponse.json(product, { status: 200 });

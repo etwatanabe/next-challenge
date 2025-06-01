@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import Image from "next/image";
-import { ProductResponseDTO } from "@/core/dtos/product/ProductResponseDTO";
+import { ProductResponseDTO } from "@/core/product/dtos/ProductResponseDTO";
 
 interface ProductFormProps {
   product?: ProductResponseDTO | null;

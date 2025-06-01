@@ -1,7 +1,7 @@
 import {
   updateProductUseCase,
   deleteProductUseCase,
-} from "@/factories/productUseCaseFactory";
+} from "@/usecases/product/factory/productUseCaseFactory";
 import { NextRequest, NextResponse } from "next/server";
 
 // PUT: Update a product by ID

@@ -1,8 +1,8 @@
-import { IOrderInterface } from "@/core/domain/interfaces/IOrderInterface";
-import { OrderStatus } from "@/core/domain/enums/OrderStatus";
-import { Order } from "@/core/domain/entities/Order";
+import { IOrderInterface } from "@/core/order/interface/IOrderInterface";
+import { OrderStatus } from "@/core/order/enums/OrderStatus";
+import { Order } from "@/core/order/entity/Order";
 import { Order as PrismaOrder } from "@prisma/client";
-import { Product } from "@/core/domain/entities/Product";
+import { Product } from "@/core/product/entity/Product";
 import { Product as PrismaProduct } from "@prisma/client";
 import prisma from "@/infra/lib/prisma";
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { OrderResponseDTO } from "@/core/dtos/order/OrderResponseDTO";
+import { OrderResponseDTO } from "@/core/order/dtos/OrderResponseDTO";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 

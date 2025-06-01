@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import {
   createProductUseCase,
   listProductBySellerIdUseCase,
-} from "@/factories/productUseCaseFactory";
+} from "@/usecases/product/factory/productUseCaseFactory";
 
 // GET: Fetch all products
 export async function GET(request: NextRequest) {
@@ -24,7 +24,8 @@ export async function GET(request: NextRequest) {
 // POST: Create a new product
 export async function POST(request: NextRequest) {
   try {
-    const { name, description, price, imageUrl, isActive } = await request.json();
+    const { name, description, price, imageUrl, isActive } =
+      await request.json();
 
     const sellerId = request.headers.get("X-User-Id");
 

@@ -1,8 +1,8 @@
-import { ISellerInterface } from "@/core/domain/interfaces/ISellerInterface";
-import { Seller } from "@/core/domain/entities/Seller";
-import { Product } from "@/core/domain/entities/Product";
-import { Order } from "@/core/domain/entities/Order";
-import { OrderStatus } from "@/core/domain/enums/OrderStatus";
+import { ISellerInterface } from "@/core/seller/interfaces/ISellerInterface";
+import { Seller } from "@/core/seller/entity/Seller";
+import { Product } from "@/core/product/entity/Product";
+import { Order } from "@/core/order/entity/Order";
+import { OrderStatus } from "@/core/order/enums/OrderStatus";
 import { Seller as PrismaSeller } from "@prisma/client";
 import { Product as PrismaProduct } from "@prisma/client";
 import { Order as PrismaOrder } from "@prisma/client";

@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
 import stripe from "@/utils/stripe";
-import { updateOrderStatusUseCase } from "@/factories/orderUseCaseFactory";
-import { OrderStatus } from "@/core/domain/enums/OrderStatus";
+import { updateOrderStatusUseCase } from "@/usecases/order/factory/orderUseCaseFactory";
+import { OrderStatus } from "@/core/order/enums/OrderStatus";
 
 // POST: Webhook handler for Stripe events
 export async function POST(request: NextRequest) {

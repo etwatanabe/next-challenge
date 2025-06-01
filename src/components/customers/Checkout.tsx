@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import Link from "next/link";
 import Image from "next/image";
-import { ProductResponseDTO } from "@/core/dtos/product/ProductResponseDTO";
+import { ProductResponseDTO } from "@/core/product/dtos/ProductResponseDTO";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || ""

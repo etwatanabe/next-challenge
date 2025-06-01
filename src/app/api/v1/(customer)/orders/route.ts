@@ -1,17 +1,29 @@
-import { createOrderUseCase } from "@/factories/orderUseCaseFactory";
+import { createOrderUseCase } from "@/usecases/order/factory/orderUseCaseFactory";
 import { NextRequest, NextResponse } from "next/server";
 
 // POST: Create a new order with a product ID
 export async function POST(request: NextRequest) {
   try {
-    const { productId, customerName, customerEmail, customerPhone, customerAddress } = await request.json();
-    if (!productId || !customerName || !customerEmail || !customerPhone || !customerAddress) {
+    const {
+      productId,
+      customerName,
+      customerEmail,
+      customerPhone,
+      customerAddress,
+    } = await request.json();
+    if (
+      !productId ||
+      !customerName ||
+      !customerEmail ||
+      !customerPhone ||
+      !customerAddress
+    ) {
       return NextResponse.json(
         { error: "All fields are required" },
         { status: 400 }
       );
     }
-    
+
     const order = await createOrderUseCase.execute({
       productId: productId,
       customerName: customerName,

@@ -1,4 +1,4 @@
-import { registerSellerUseCase } from "@/factories/sellerUseCaseFactory";
+import { registerSellerUseCase } from "@/usecases/seller/factory/sellerUseCaseFactory";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 

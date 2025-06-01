@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import ProductForm from "./ProductForm";
 import Image from "next/image";
 import Link from "next/link";
-import { ProductResponseDTO } from "@/core/dtos/product/ProductResponseDTO";
+import { ProductResponseDTO } from "@/core/product/dtos/ProductResponseDTO";
 
 export default function ProductList() {
   const [products, setProducts] = useState<ProductResponseDTO[]>([]);

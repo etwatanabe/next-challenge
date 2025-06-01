@@ -1,5 +1,5 @@
-import { IProductInterface } from "@/core/domain/interfaces/IProductInterface";
-import { Product } from "@/core/domain/entities/Product";
+import { IProductInterface } from "@/core/product/interfacess/IProductInterface";
+import { Product } from "@/core/product/entity/Product";
 import { Product as PrismaProduct } from "@prisma/client";
 import prisma from "@/infra/lib/prisma";
 

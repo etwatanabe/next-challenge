@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { listProductPublicUseCase } from "@/factories/productUseCaseFactory";
+import { listProductPublicUseCase } from "@/usecases/product/factory/productUseCaseFactory";
 
 // GET: List all products for public use
 export async function GET() {

@@ -1,4 +1,4 @@
-import { listOrdersUseCase } from "@/factories/orderUseCaseFactory";
+import { listOrdersUseCase } from "@/usecases/order/factory/orderUseCaseFactory";
 import { NextRequest, NextResponse } from "next/server";
 
 // GET: List all orders for a seller

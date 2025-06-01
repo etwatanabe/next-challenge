@@ -1,4 +1,4 @@
-import { getOrderByIdUseCase } from "@/factories/orderUseCaseFactory";
+import { getOrderByIdUseCase } from "@/usecases/order/factory/orderUseCaseFactory";
 import { NextRequest, NextResponse } from "next/server";
 
 // GET: Get an order by ID
@@ -13,10 +13,7 @@ export async function GET(
 
     const order = await getOrderByIdUseCase.execute(id, sellerId!);
     if (!order) {
-      return NextResponse.json(
-        { error: "Order not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Order not found" }, { status: 404 });
     }
 
     return NextResponse.json(order, { status: 200 });
