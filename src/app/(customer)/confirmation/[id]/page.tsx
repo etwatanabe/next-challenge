@@ -11,7 +11,7 @@ export default async function OrderConfirmationPage({
 }: {
   params: { id: string };
 }) {
-  const orderId = await params.id;
+  const orderId = (await params).id;
 
   return (
     <div className="min-h-screen bg-[var(--background)]">
