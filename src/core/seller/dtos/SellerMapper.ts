@@ -1,7 +1,7 @@
 import { Seller } from "@/core/seller/entity/Seller";
 import { SellerResponseDTO } from "./SellerResponseDTO";
-import { ProductMapper } from "../../product/dtos/ProductMapper";
-import { OrderMapper } from "../../order/dtos/OrderMapper";
+import { ProductMapper } from "@/core/product/dtos/ProductMapper";
+import { OrderMapper } from "@/core/order/dtos/OrderMapper";
 
 export class SellerMapper {
   static toResponseDTO(seller: Seller): SellerResponseDTO {
