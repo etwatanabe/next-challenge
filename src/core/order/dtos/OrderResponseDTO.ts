@@ -1,5 +1,5 @@
-import { OrderStatus } from "@prisma/client";
 import { Product } from "@/core/product/entity/Product";
+import { OrderStatus } from "../enums/OrderStatus";
 
 export type OrderResponseDTO = {
   id: string;
