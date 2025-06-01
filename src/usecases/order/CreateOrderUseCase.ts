@@ -16,12 +16,12 @@ export class CreateOrderUseCase {
 
   async execute(data: CreateOrderDTO): Promise<OrderResponseDTO> {
     const product = await this.productRepository.findById(data.productId);
-    if (!product) {
+    if (!product || !product.id) {
       throw new Error(`Product with ID ${data.productId} not found.`);
     }
 
     const seller = await this.sellerRepository.findByProductId(product.id);
-    if (!seller) {
+    if (!seller || !seller.id) {
       throw new Error(`Seller for product ID ${product.id} not found.`);
     }
 

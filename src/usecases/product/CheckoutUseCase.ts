@@ -43,8 +43,8 @@ export class CheckoutUseCase {
       throw new Error(`Product with ID ${productId} not found`);
     }
 
-    const seller = await this.SellerRepository.findByProductId(product.id);
-    if (!seller) {
+    const seller = await this.SellerRepository.findByProductId(product.id!);
+    if (!seller || !seller.id) {
       throw new Error(`Seller for product ${product.id} not found`);
     }
 
