@@ -81,7 +81,6 @@ Para facilitar a rotina de quem gerencia ou desenvolve o projeto, incluímos um 
 
 | Comando            | Descrição                                                                 |
 |--------------------|---------------------------------------------------------------------------|
-|
 | `make up`          | Sobe todos os serviços com Docker Compose                                 |
 | `make down`        | Para e remove os containers criados pelo Docker Compose                   |
 | `make clean`       | Remove containers, volumes e redes do projeto (cuidado: remove dados!)    |
