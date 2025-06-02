@@ -2,16 +2,18 @@
 
 Este projeto é um marketplace desenvolvido com [Next.js](https://nextjs.org), integrando autenticação, painel do vendedor, upload de imagens, pagamentos via Stripe e banco de dados PostgreSQL com Prisma.
 
-## Funcionalidades
+## Funcionalidades em Destaque
 
-- Cadastro e login de vendedores
-- Dashboard para gerenciamento de produtos e pedidos
-- Upload de imagens de produtos
-- Integração com Stripe para recebimento de pagamentos
-- Checkout para clientes
-- Listagem de produtos para clientes
-- Banco de dados PostgreSQL gerenciado via Prisma ORM
-- Interface responsiva e moderna
+- Cadastro e login de vendedores com segurança
+- Painel do vendedor para gerenciar produtos e pedidos
+- Upload fácil de imagens dos produtos
+- Integração com Stripe para pagamentos online
+- Checkout rápido e seguro para clientes
+- Listagem clara e organizada dos produtos
+- Banco de dados robusto (PostgreSQL) gerenciado via Prisma
+- Interface moderna, responsiva e fácil de usar
+- Autenticação de usuários com NextAuth.js
+- Experiência de compra fluida para o cliente
 
 ## Tecnologias Utilizadas
 
@@ -71,6 +73,49 @@ Este projeto é um marketplace desenvolvido com [Next.js](https://nextjs.org), i
 ├── .env.example            # Exemplo de variáveis de ambiente
 └── README.md
 ```
+
+## Facilidade no dia a dia com Makefile
+
+Para facilitar a rotina de quem gerencia ou desenvolve o projeto, incluímos um **Makefile**. Ele permite executar tarefas comuns com comandos simples, sem precisar decorar instruções longas.
+
+
+| Comando            | Descrição                                                                 |
+|--------------------|---------------------------------------------------------------------------|
+|
+| `make up`          | Sobe todos os serviços com Docker Compose                                 |
+| `make down`        | Para e remove os containers criados pelo Docker Compose                   |
+| `make clean`       | Remove containers, volumes e redes do projeto (cuidado: remove dados!)    |
+
+Esses comandos tornam o uso do projeto mais prático, mesmo para quem não é da área técnica. Basta rodar o comando desejado no terminal e pronto!
+
+---
+
+## Como instalar o Make
+
+O **make** é uma ferramenta que ajuda a automatizar comandos. Veja como instalar:
+
+### No Linux
+
+A maioria das distribuições já vem com o make instalado. Se não tiver, basta rodar:
+
+```bash
+sudo apt update
+sudo apt install make
+```
+
+### No Windows
+
+1. Baixe e instale o [Git for Windows](https://gitforwindows.org/).
+2. Durante a instalação, selecione a opção para instalar o "Git Bash".
+3. Abra o "Git Bash" e digite `make --version` para conferir se está disponível.
+   - Se não estiver, você pode instalar o [Chocolatey](https://chocolatey.org/) e rodar:
+     ```bash
+     choco install make
+     ```
+
+Pronto! Agora você pode usar todos os comandos do Makefile normalmente.
+
+---
 
 ## Observações importantes
 
