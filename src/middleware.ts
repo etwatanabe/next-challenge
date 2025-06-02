@@ -42,6 +42,7 @@ export async function middleware(request: NextRequest) {
     "/api/v1/dashboard/orders",
     "/api/v1/dashboard/products",
     "/api/v1/dashboard/stripe",
+    "/api/v1/upload",
   ];
   const isProtectedApiRoute = protectedApiRoutes.some((route) =>
     pathname.startsWith(route)
