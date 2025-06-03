@@ -4,16 +4,17 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET}
+        STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
         NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}
+        STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET}
     ports:
       - "3000:3000"
     command: >
       sh -c "mkdir -p /app/uploads && chmod 777 /app/uploads && npx prisma migrate deploy && node server.js"
     environment:
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
       - NEXTAUTH_URL=${NEXTAUTH_URL}
       - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
-      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
       - DATABASE_URL=${DATABASE_URL}
     depends_on:
       - postgres
