@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
+import { revalidatePath } from "next/cache";
 
 export async function POST(request: NextRequest) {
   try {
@@ -25,16 +26,14 @@ export async function POST(request: NextRequest) {
 
     const buffer = Buffer.from(await file.arrayBuffer());
 
-    const uploadsDir = path.join(process.cwd(), "public/uploads");
-
-    // Garante que o diretório existe
+    const uploadsDir = path.join(process.cwd(), "uploads");
     await mkdir(uploadsDir, { recursive: true });
-
+    
     const filePath = path.join(uploadsDir, fileName);
-
     await writeFile(filePath, buffer);
-
-    const imageUrl = `/uploads/${fileName}`;
+    
+    const imageUrl = `/api/v1/upload/${fileName}`;
+    revalidatePath(imageUrl);
 
     return NextResponse.json({ url: imageUrl }, { status: 201 });
   } catch (error) {
