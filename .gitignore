@@ -32,6 +32,7 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env
+.env.docker
 
 # vercel
 .vercel
@@ -42,6 +43,6 @@ next-env.d.ts
 
 /src/generated/prisma
 
-# Ignora todos os arquivos em public/uploads, exceto o .gitkeep
-public/uploads/*
-!public/uploads/.gitkeep
+# Ignora todos os arquivos em uploads, exceto o .gitkeep
+uploads/*
+!uploads/.gitkeep
