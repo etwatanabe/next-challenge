@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
-import { revalidatePath } from "next/cache";
 
 export async function POST(request: NextRequest) {
   try {
@@ -33,7 +32,6 @@ export async function POST(request: NextRequest) {
     await writeFile(filePath, buffer);
     
     const imageUrl = `/api/v1/upload/${fileName}`;
-    revalidatePath(imageUrl);
 
     return NextResponse.json({ url: imageUrl }, { status: 201 });
   } catch (error) {
