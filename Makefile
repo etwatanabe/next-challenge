@@ -1,7 +1,7 @@
 # Makefile para gerenciar o ambiente de desenvolvimento
 
 DOCKER_COMPOSE = docker compose
-DOCKER_ENV = .env
+DOCKER_ENV = .env.docker
 
 ifeq ($(OS),Windows_NT)
 help: ## Comandos disponíveis 
