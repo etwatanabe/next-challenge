@@ -41,8 +41,11 @@ USER nextjs
 # Copiar arquivos necessários
 COPY --from=builder /app/next.config.ts ./
 COPY --from=builder /app/public ./public
+COPY --from=builder /app/uploads ./uploads
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/prisma ./prisma
+
+RUN chmod -R 777 ./uploads || true
 
 # Copiar arquivos de build com permissões corretas
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./

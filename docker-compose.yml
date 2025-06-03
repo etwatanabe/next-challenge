@@ -9,7 +9,7 @@ services:
     ports:
       - "3000:3000"
     command: >
-      sh -c "npx prisma migrate deploy && node server.js"
+      sh -c "mkdir -p /app/uploads && chmod 777 /app/uploads && npx prisma migrate deploy && node server.js"
     environment:
       - NEXTAUTH_URL=${NEXTAUTH_URL}
       - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
@@ -18,7 +18,7 @@ services:
     depends_on:
       - postgres
     volumes:
-      - ./public/uploads:/app/public/uploads
+      - uploads_data:/app/uploads
 
   postgres:
     image: postgres:15
@@ -41,4 +41,5 @@ services:
     depends_on:
       - app
 volumes:
+  uploads_data:
   postgres_data:
