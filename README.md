@@ -1,4 +1,4 @@
-# Next Challenge - Marketplace com Next.js
+# Marketplace com Next.js
 
 Este projeto é um marketplace desenvolvido com [Next.js](https://nextjs.org), integrando autenticação, painel do vendedor, upload de imagens, pagamentos via Stripe e banco de dados PostgreSQL com Prisma.
 
