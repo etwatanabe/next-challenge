@@ -31,8 +31,8 @@ Este projeto é um marketplace desenvolvido com [Next.js](https://nextjs.org), i
 1. **Clone o repositório:**
 
    ```bash
-   git clone https://github.com/seu-usuario/next-challenge.git
-   cd next-challenge
+   git clone https://github.com/seu-usuario/next-marketplace.git
+   cd next-marketplace
    ```
 
 2. **Crie o arquivo `.env` com base no `.env.example` e configure as variáveis:**
